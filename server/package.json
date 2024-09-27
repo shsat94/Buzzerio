@@ -1,0 +1,15 @@
+{
+  "name": "buzzerio-server-side",
+  "version": "2.0.0",
+  "description": "This is the server of the buzzerio-a realtime buzzer application for the quiz competition",
+  "main": "index.js",
+  "scripts": {
+    
+  },
+  "author": "velociraptor",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.0",
+    "mongoose": "^8.6.4"
+  }
+}
