@@ -1,13 +1,21 @@
 const mongoose = require('mongoose');
 
 const rooms = new mongoose.Schema({
-    host: {
+    hostid: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
+    },
+    hostname:{
+        type: String,
         ref: 'user'
     },
     roomId: {
         type: String,
         default: ''
+    },
+    validDate:{
+        type:Date,
+        required:true
     },
     members: {
         type: [String],

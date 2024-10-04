@@ -16,7 +16,8 @@ connectToDatabase();
 
 //routes
 app.use('/authentication',require('./routes/authentication'));
+app.use('/rooms',require('./routes/rooms'));
 
 app.listen(port,()=>{
     console.log(`server is listening at port ${port}`);
-})
+});
