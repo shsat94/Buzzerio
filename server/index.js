@@ -6,6 +6,7 @@ const app=express();
 const connectToDatabase=require('./database/db');
 //port
 const port=process.env.PORT;
+const apiKey=process.env.BACKEND_API_KEY;
 
 //cors origin and json parsing 
 app.use(cors());
@@ -15,8 +16,9 @@ app.use(express.json());
 connectToDatabase();
 
 //routes
-app.use('/authentication',require('./routes/authentication'));
-app.use('/rooms',require('./routes/rooms'));
+app.use(`/authentication`,require('./routes/authentication'));
+app.use(`/host`,require('./routes/host'));
+app.use(`/member`,require('./routes/member'));
 
 app.listen(port,()=>{
     console.log(`server is listening at port ${port}`);

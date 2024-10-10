@@ -11,6 +11,7 @@ const nodemailer=require('nodemailer');
 const secretKey=process.env.JWT_AUTHENTICATION_KEY;
 const nodemailerEmail=process.env.ADMIN_EMAIL;
 const nodemailerPassword=process.env.NODEMAILER_PASSWORD;
+const nodemailerPort=process.env.NODEMAILER_PORT;
 
 
 //signup of the user
@@ -93,7 +94,7 @@ router.post('/sendotptomail',async(req,res)=>{
         const transporter = nodemailer.createTransport({
             service:'gmail',
             secure: true,
-            port:465,
+            port:nodemailerPort,
             auth:{
                 user:nodemailerEmail,
                 pass:nodemailerPassword
@@ -124,7 +125,7 @@ router.post('/sendotptomail',async(req,res)=>{
 
 
 //reset password
-router.post('/resetpassword',async(req,res)=>{
+router.put('/resetpassword',async(req,res)=>{
     let execution=true;
     try {
         let updation=false;
