@@ -1,0 +1,22 @@
+.btn-container{
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    gap: 1rem;
+    
+}
+
+.btn{
+    height: 12rem;
+    width: 12rem;
+    color: white;
+    border: 1px solid white;
+    margin-top: 3rem;
+}
+
+.btn:hover{
+    height: 12rem;
+    width: 12rem;
+    color: white;
+    border: 3px solid white;
+}

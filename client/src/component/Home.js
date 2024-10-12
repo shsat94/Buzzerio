@@ -1,10 +1,25 @@
-import React from 'react'
+import React from 'react';
+import '../styles/Home.css'
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+
+  let navigate=useNavigate();
+  const handleCreateRoomHandle=(e)=>{
+    e.preventDefault();
+    navigate('/host');
+  }
   return (
-    <div>
+    <>
+    <div className="btn-container">
+
       
-    </div>
+        <button onClick={handleCreateRoomHandle} className="btn">Create Room</button>
+     
+        <button className="btn">Join Room</button>
+      </div>
+    
+    </>
   )
 }
 

@@ -1,0 +1,57 @@
+.dashboard {
+    color: aliceblue;
+    display: flex;
+    justify-content: center;
+    height: 20rem;
+    width: 100%;
+    gap: 1rem;
+}
+
+.room-creator-dashboard {
+    width: 100%;
+    text-align: center;
+}
+
+.center {
+    text-align: center;
+}
+
+.head {
+    color: #9ef01a;
+}
+
+.host {
+    font-size: 2rem;
+    color: #00ffa2;
+    margin: 1.5rem;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr {
+    border-bottom: 1px solid white;
+}
+
+.leaderboard {
+    border: 1px solid white;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    width: 80%;
+    overflow-y: auto;
+}
+.memberlist {
+    border: 1px solid white;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    overflow-y: auto;
+    width: 20%;
+}
+
+.details{
+    display: flex;
+    justify-content: space-around;
+}

@@ -16,9 +16,9 @@ app.use(express.json());
 connectToDatabase();
 
 //routes
-app.use(`/authentication`,require('./routes/authentication'));
-app.use(`/host`,require('./routes/host'));
-app.use(`/member`,require('./routes/member'));
+app.use(`/${apiKey}/authentication`,require('./routes/authentication'));
+app.use(`/${apiKey}/host`,require('./routes/host'));
+// app.use(`/member`,require('./routes/member'));
 
 app.listen(port,()=>{
     console.log(`server is listening at port ${port}`);

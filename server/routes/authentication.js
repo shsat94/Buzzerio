@@ -55,9 +55,10 @@ router.post('/signup',async(req,res)=>{
 router.post('/signin',async(req,res)=>{
     let execution=true;
     try {
-        let login=false;
+        let login=true;
         let user=await User.findOne({email:req.body.email});
         if(!user){
+            login=false;
             res.status(404).json({login})
         }
         const comparePassword=await bcrypt.compare(req.body.password,user.password);
@@ -71,7 +72,7 @@ router.post('/signin',async(req,res)=>{
             }
         };
         const authenticationToken=jwt.sign(data,secretKey);
-        res.status(200).json({execution,authenticationToken});
+        res.status(200).json({execution,login,authenticationToken});
 
     } catch (error) {
         execution=false;

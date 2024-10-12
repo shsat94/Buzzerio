@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import logo from '../assests/logo.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Navbar.css';
 const Navbar = () => {
   const [activeLink, setActiveLink] = useState("home");
+  let navigate=useNavigate();
+  const handleLogin=(e)=>{
+    e.preventDefault();
+    navigate('/login');
+  }
 
   return (
     <nav>
@@ -15,7 +20,7 @@ const Navbar = () => {
           <li>
             <Link
               className={activeLink === "home" ? "active" : ""}
-              onClick={() => setActiveLink("home")} to="/home"
+              onClick={() => setActiveLink("home")} to="/"
             >HOME</Link>
           </li>
           <li>
@@ -34,11 +39,19 @@ const Navbar = () => {
             CONTACT US
           </Link>
           </li>
+          <li>
+          <Link
+            className={activeLink === "avialableroom" ? "active" : ""}
+            onClick={() => setActiveLink("avialableroom")} to="/avialableroom"
+          >
+            ROOM
+          </Link>
+          </li>
         </ul>
       </div>
       <div className="auth">
         <ul>
-          <li>
+          <li onClick={handleLogin} style={{cursor:'pointer'}}>
     LOGIN
           </li>
         </ul>
