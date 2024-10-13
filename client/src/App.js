@@ -9,6 +9,7 @@ import Host from "./component/Host";
 import Login from "./component/Login";
 import Signup from "./component/Signup";
 import AvialableRooms from "./component/AvialableRooms";
+import Profile from "./component/Profile";
 
 import ServerErrorPage from "./errorpages/ServerErrorPage";
 import { useContext } from "react";
@@ -41,6 +42,7 @@ function App() {
             <Route exact path='/login' element={<Login />}></Route>
             <Route exact path='/signup' element={<Signup />}></Route>
             <Route exact path='/avialableroom' element={<AvialableRooms />}></Route>
+            <Route exact path='/profile' element={<Profile/>}></Route>
           </Routes>
         </BrowserRouter>
       </>

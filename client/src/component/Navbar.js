@@ -9,6 +9,10 @@ const Navbar = () => {
     e.preventDefault();
     navigate('/login');
   }
+  const handleprofileClick=(e)=>{
+    e.preventDefault();
+    navigate('/profile');
+  }
 
   return (
     <nav>
@@ -51,9 +55,13 @@ const Navbar = () => {
       </div>
       <div className="auth">
         <ul>
-          <li onClick={handleLogin} style={{cursor:'pointer'}}>
+          {localStorage.getItem('token')===null?<li onClick={handleLogin} style={{cursor:'pointer'}}>
     LOGIN
-          </li>
+          </li>:<span onClick={handleprofileClick} style={{cursor:'pointer'}} className="material-symbols-outlined">
+person
+</span>}
+          
+          
         </ul>
       </div>
     </nav>

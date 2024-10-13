@@ -20,7 +20,12 @@ router.post('/signup',async(req,res)=>{
     try {
         let userisPresent=false;
         let user=await User.findOne({email:req.body.email});
+        let mob=await User.findOne({mobileNo:req.body.mobileNo});
         if(user){
+            userisPresent=true;
+            return res.status(422).json({userisPresent});
+        }
+        if(mob){
             userisPresent=true;
             return res.status(422).json({userisPresent});
         }
@@ -42,11 +47,13 @@ router.post('/signup',async(req,res)=>{
             }
         };
         const authenticationToken=jwt.sign(data,secretKey);
-        res.status(200).json({execution,authenticationToken});
+        res.status(200).json({userisPresent,execution,authenticationToken});
 
     } catch (error) {
         execution=false;
+        console.log(error);
         res.status(500).json({execution});
+
     }
 });
 
