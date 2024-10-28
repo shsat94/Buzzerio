@@ -1,12 +1,22 @@
-//imports
+//predefined modules
 require('dotenv').config();
 const express=require('express');
 const cors=require('cors');
-const app=express();
+const http=require('http');
+const socketIo=require('socket.io');
+
+//user defined modules
 const connectToDatabase=require('./database/db');
-//port
+const roomManupulationSocket = require('./sockets/roomManupulationSocket');
+const buzzerLeaderboardManipulation = require('./sockets/buzzerLeaderboardManipulation');
+
+//env variables
 const port=process.env.PORT;
 const apiKey=process.env.BACKEND_API_KEY;
+
+const app=express();
+const socketServer=http.createServer(app);
+const io=socketIo(socketServer);
 
 //cors origin and json parsing 
 app.use(cors());
@@ -19,6 +29,12 @@ connectToDatabase();
 app.use(`/${apiKey}/authentication`,require('./routes/authentication'));
 app.use(`/${apiKey}/host`,require('./routes/host'));
 // app.use(`/member`,require('./routes/member'));
+
+
+//Web-sockets connection
+roomManupulationSocket(io);
+// buzzerLeaderboardManipulation(io);
+
 
 
 app.listen(port,()=>{
