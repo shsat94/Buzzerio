@@ -23,10 +23,9 @@ router.post('/createroom',fetchUser,async(req,res)=>{
             hostid:req.user.id,
             hostname:req.user.name,
             roomId:roomid,
-            validDate:req.body.validDate,
             members:[]
         });
-        res.status(200).json({room});
+        res.status(200).json({execution,room});
         
     } catch (error) {
         execution=false;
@@ -40,7 +39,7 @@ router.get('/getallrooms',fetchUser,async(req,res)=>{
     try {
         
         const room= await Room.find({hostid:req.user.id});
-        res.status(200).json({room});
+        res.status(200).json({execution,room});
         
     } catch (error) {
         execution=false;
@@ -48,14 +47,14 @@ router.get('/getallrooms',fetchUser,async(req,res)=>{
         res.status(500).json({execution});
     }
 });
-
+ 
 
 
 router.get('/getroomdetails',fetchUser,async(req,res)=>{
     let execution=true;
     try { 
-        const room= await Room.findOne({roomId:req.body.roomid});
-        res.status(200).json({room});
+        const room= await Room.findOne({roomId:req.body.roomId});
+        res.status(200).json({execution,room});
         
     } catch (error) {
         execution=false;

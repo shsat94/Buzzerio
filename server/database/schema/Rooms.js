@@ -15,7 +15,7 @@ const rooms = new mongoose.Schema({
     },
     validDate:{
         type:Date,
-        required:true
+        default:Date.now()
     },
     members: {
         type: [String],
