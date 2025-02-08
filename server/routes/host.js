@@ -29,6 +29,7 @@ router.post('/createroom',fetchUser,async(req,res)=>{
         
     } catch (error) {
         execution=false;
+        console.log(error);
         res.status(500).json({execution});
     }
 });

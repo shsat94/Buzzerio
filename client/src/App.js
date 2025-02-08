@@ -21,7 +21,6 @@ import { UseStateVariableContext } from "./context/useStateVariables";
 function App() {
   const context = useContext(UseStateVariableContext);
   document.body.style.backgroundColor = 'black';
-  console.log(context.errorflag);
   if (context.errorflag === 500) {
     return (
       <>

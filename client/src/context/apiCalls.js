@@ -1,13 +1,13 @@
 import { createContext, useContext } from "react";
-import { EnvVariableContext } from '../context/envVariables';
+import { EnvVariableContext } from './envVariables';
 import { UseStateVariableContext } from "./useStateVariables";
 
 
 export const ApiCallContext = createContext();
 
 export const ApiCalls = (props) => {
-    const { apiKey, host } = useContext(EnvVariableContext);
-    const {seterrorflag}=useContext(UseStateVariableContext);
+    const { apiKey, host } = useContext(EnvVariableContext) || {};
+    const {seterrorflag}=useContext(UseStateVariableContext) || {};
 
     const createRoom = async () => {
         try {
@@ -45,13 +45,12 @@ export const ApiCalls = (props) => {
 
     const getRoomDetails=async (roomId)=>{
         try {
-            const res=await fetch(`${host}/${apiKey}/host/getroomdetails`,{
+            const res=await fetch(`${host}/${apiKey}/host/getroomdetails?roomId=${roomId}`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'auth-token': localStorage.getItem('token')
-                },
-                body: JSON.stringify({roomId:roomId})
+                }
             });
             const response= await res.json();
             return response;

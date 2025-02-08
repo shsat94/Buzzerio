@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import '../styles/Home.css'
 import { useNavigate } from 'react-router-dom';
-import { disconnectSocket, initiateConnection } from '../services/socketService';
-import { ApiCallContext } from '../context/apiCalls';
+
+import { useRoomActions } from '../controllers/room';
 import { UseStateVariableContext } from '../context/useStateVariables';
 
 
@@ -10,8 +10,9 @@ const Home = () => {
   
 
   let navigate = useNavigate();
-  const {createRoom}=useContext(ApiCallContext);
+ 
   const {seterrorflag}=useContext(UseStateVariableContext);
+  const { createRoom } = useRoomActions();
 
 
 
@@ -26,12 +27,7 @@ const Home = () => {
       //yaha pe se shuru krna hai new context bna kr 
       
 
-      useEffect(() => {
-        initiateConnection();
-        return () => {
-          disconnectSocket();
-        };
-      }, []);
+      
       navigate('/host');
     } catch (error) {
 
