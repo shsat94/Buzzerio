@@ -18,14 +18,12 @@ exports.createNewRoom=async(user)=>{
     try {
         let roomid=generateRoomId();
 
-        const room=new Rooms({
+        const room=await Rooms.create({
             hostid:user.id,
             hostname:user.name,
-            roomId:roomid
+            roomId:roomid 
         });
-
-        const savedroom=await room.save();
-        return savedroom;  
+        return room;  
     } catch (error) {
         execution=false;
         res.status(500).json({execution});

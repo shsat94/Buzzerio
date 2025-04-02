@@ -1,7 +1,7 @@
 const jwt=require('jsonwebtoken');
 const secretKey=process.env.JWT_AUTHENTICATION_KEY;
 
-exports.fetchUserData=(token)=>{
+exports.fetchUserData=(token,res)=>{
     let execution=true;
         try {
             const data=jwt.verify(token,secretKey);
@@ -9,6 +9,7 @@ exports.fetchUserData=(token)=>{
             
         } catch (error) {
             execution=false;
+            console.log(error);
             res.status(500).json({execution});
         }
 }; 

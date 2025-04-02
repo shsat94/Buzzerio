@@ -1,9 +1,6 @@
 const Rooms = require("../database/schema/Rooms");
 
 
-
-
-
 exports.checkRoomIsPresent=async(roomid,memberName)=>{
     let execution=true;
     try {
@@ -12,7 +9,8 @@ exports.checkRoomIsPresent=async(roomid,memberName)=>{
             return false;
         }
         room.members.push(memberName);
-        return room;
+        const savedroom=await Rooms.findOneAndUpdate({roomId:roomid},{ $set: room }, { new: true })
+        return savedroom;
 
     } catch (error) {
         execution=false;

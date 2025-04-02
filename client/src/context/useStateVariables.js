@@ -5,9 +5,14 @@ export const UseStateVariableContext=createContext();
 
 export const UseStateVariableState=(props)=>{
     const[errorflag,seterrorflag]=useState(200);
-    return(
+    const [isdisable,setisdisable]=useState(false);
+    const [ROOMID,setROOMID]=useState("");
+    const [NAME,setNAME]=useState("");
+    const [timeMappingList, setTimeMappingList] = useState([]);
 
-    <UseStateVariableContext.Provider value={{errorflag,seterrorflag}}>
+
+    return(
+    <UseStateVariableContext.Provider value={{errorflag,seterrorflag,isdisable,setisdisable,ROOMID,setROOMID,NAME,setNAME,timeMappingList,setTimeMappingList}}>
         {props.children}
     </UseStateVariableContext.Provider>
     )

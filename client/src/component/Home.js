@@ -7,30 +7,31 @@ import { UseStateVariableContext } from '../context/useStateVariables';
 
 
 const Home = () => {
-  
+
 
   let navigate = useNavigate();
- 
-  const {seterrorflag}=useContext(UseStateVariableContext);
+
+  const { seterrorflag } = useContext(UseStateVariableContext);
   const { createRoom } = useRoomActions();
+ 
 
 
-
-  const handleCreateRoomHandle = async(e) => {
+  const handleCreateRoomHandle = async (e) => {
+    e.preventDefault();
+    try {
+      createRoom();
+      navigate("/host");
+    } catch (error) { 
+      seterrorflag(500);
+    }
+  };
+  const handleJoinRoomHandle = async (e) => {
     try {
       e.preventDefault();
-      const response=createRoom();
-      if (response.execution!==true){
-        seterrorflag(500);
-        return;
-      }
-      //yaha pe se shuru krna hai new context bna kr 
-      
-
-      
-      navigate('/host');
+      createRoom();
+      navigate('/memberinfo');
     } catch (error) {
-
+      seterrorflag(500);
     }
   }
   return (
@@ -40,7 +41,7 @@ const Home = () => {
 
         <button onClick={handleCreateRoomHandle} className="btn">Create Room</button>
 
-        <button className="btn">Join Room</button>
+        <button onClick={handleJoinRoomHandle} className="btn">Join Room</button>
       </div>
 
     </>

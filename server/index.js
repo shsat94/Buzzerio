@@ -23,8 +23,7 @@ const server = http.createServer(app);
 // const io=(socketIo)(port, { cors: { origin: "*" } });
 const io = new socketIo.Server(server, {
     cors: {
-      origin: clientUrl,
-      methods: ["GET", "POST"],
+      origin: "*"
     },
   });
 
@@ -38,7 +37,7 @@ connectToDatabase();
 //routes
 app.use(`/${apiKey}/authentication`,require('./routes/authentication'));
 // app.use(`/${apiKey}/host`,require('./routes/host'));
-// app.use(`/member`,require('./routes/member'));
+// app.use(`//${apiKey}member`,require('./routes/member'));
 
 
 //Web-socket connection
@@ -46,6 +45,6 @@ socketController(io);
 
 
 
-app.listen(port,()=>{
+server.listen(port,()=>{
     console.log(`server is listening at port ${port}`);
 }); 

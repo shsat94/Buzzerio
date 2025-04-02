@@ -3,23 +3,18 @@ import { EnvVariableContext } from "../context/envVariables";
 import { UseStateVariableContext } from "../context/useStateVariables";
 
 export const useRoomActions = () => {
-    const { apiKey, host } = useContext(EnvVariableContext) || {};
+    const { apiKey, host, socket } = useContext(EnvVariableContext) || {};
     const { seterrorflag } = useContext(UseStateVariableContext) || {};
+    
 
-    const createRoom = async () => {
+    const createRoom = () => {
+
         try {
-            const res = await fetch(`${host}/${apiKey}/host/createroom`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'auth-token': localStorage.getItem('token'),
-                },
-            });
-            const response = await res.json();
-            return response;
+            socket.emit("create-room", localStorage.getItem("token"));
+
         } catch (error) {
-            console.log(error);
             seterrorflag(500);
+
         }
     };
 
