@@ -6,8 +6,8 @@ import LeaderboardComponent from './LeaderboardComponent';
 
 const Member = () => {
     const { socket } = useContext(EnvVariableContext) || {};
-    const { isdisable, ROOMID, NAME ,timeMappingList, setTimeMappingList} = useContext(UseStateVariableContext);
-    
+    const { isdisable, ROOMID, NAME } = useContext(UseStateVariableContext);
+    const [timeMappingList, setTimeMappingList] = useState([]);
 
     const buzzerClick = (e) => {
         e.preventDefault();
@@ -15,27 +15,48 @@ const Member = () => {
     };
 
     const handlePressInfo = useCallback((memname, time) => {
-
-        socket.emit('update-host',timeMappingList);
         setTimeMappingList((prevList) => {
-            const newPosition = prevList.length + 1; 
-            return [...prevList, { pos: newPosition, name: memname,clickedtime:time, time: prevList.length === 0 ? 0 : time - prevList[0].clickedtime }];
+            const newPosition = prevList.length + 1;
+            const newList = [
+                ...prevList,
+                {
+                    pos: newPosition,
+                    name: memname,
+                    clickedtime: time,
+                    time: prevList.length === 0 ? 0 : time - prevList[0].clickedtime
+                }
+            ];
+            socket.emit('update-host', newList);
+            return newList;
         });
+    }, [socket]);
 
+    const handleResetLeaderboard = useCallback(() => {
+        setTimeMappingList([]);
     }, []);
 
     useEffect(() => {
+        if (!socket) return;
 
         socket.off("press-info").on("press-info", handlePressInfo);
+        socket.off("reset-leaderboard").on("reset-leaderboard", handleResetLeaderboard);
 
         return () => {
-            socket.off("press-info");
+            socket.off("press-info", handlePressInfo);
+            socket.off("reset-leaderboard", handleResetLeaderboard);
         };
-    }, [socket, handlePressInfo]);
+    }, [socket, handlePressInfo, handleResetLeaderboard]);
+
+    const leaveRoom = () => {
+        socket?.emit('leave-room', ROOMID, NAME);
+        window.location.reload();
+    };
 
     return (
         <div className="room-member-dashboard">
-            <p style={{ color: "#9ef01a", fontSize: "3rem", textAlign: "center", marginTop: "1.5rem" }} id="join-name"></p>
+            <p style={{ color: "#9ef01a", fontSize: "3rem", textAlign: "center", marginTop: "1.5rem" }}>
+                {NAME}
+            </p>
 
             <div className="flex-container">
                 <div className="buzzer-container">
@@ -65,7 +86,7 @@ const Member = () => {
             </div>
 
             <div className="btns">
-                <button id="leave" className="reset">Leave Room</button>
+                <button id="leave" className="reset" onClick={leaveRoom}>Leave Room</button>
             </div>
         </div>
     );

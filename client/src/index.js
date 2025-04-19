@@ -9,13 +9,13 @@ import { BuzzerioVariables } from './context/buzzerioVariables.js';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BuzzerioVariables>
-      <EnvVariables>
-        <UseStateVariableState>
+    <UseStateVariableState>
+      <BuzzerioVariables>
+        <EnvVariables>
           <App />
-        </UseStateVariableState>
-      </EnvVariables>
-    </BuzzerioVariables>
+        </EnvVariables>
+      </BuzzerioVariables>
+    </UseStateVariableState>
   </React.StrictMode>
 );
 

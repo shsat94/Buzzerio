@@ -1,7 +1,4 @@
 
-
-
-
 module.exports=(io,socket)=>{  
     
     socket.on('clicked-time', (roomid,name) => {
@@ -14,6 +11,10 @@ module.exports=(io,socket)=>{
 
     socket.on('update-host',(timemaplist)=>{
         io.emit('update-host-leader',timemaplist);
+    });
+
+    socket.on('reset-leaderboard',(roomid)=>{
+        io.to(roomid).emit('reset-leaderboard');
     })
  
 }

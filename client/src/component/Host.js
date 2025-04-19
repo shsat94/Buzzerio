@@ -13,6 +13,12 @@ const Host = () => {
   const [timeList, setlist] = useState([]);
   const navigate = useNavigate();
 
+  const handleResetButtonClick=(e)=>{
+    e.preventDefault();
+    setlist([]);
+    socket.emit("reset-leaderboard",roomId);
+  }
+
   useEffect(() => {
     if (!socket) return;
     const handleRoomInfo = (hostname, roomid) => {
@@ -30,9 +36,10 @@ const Host = () => {
     };
 
 
-    socket.on('update-host-leader',(timemaplist)=>{
+    socket.on("update-host-leader", (timemaplist) => {
+      console.log(timemaplist);
       setlist(timemaplist);
-    })
+    });
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     window.addEventListener("load", handleAfterUnload);
@@ -75,7 +82,9 @@ const Host = () => {
             })}
           </div>
         </div>
-
+        <div className="btns">
+          <button id="leave" onClick={handleResetButtonClick} className="reset">Reset Leaderboard</button>
+        </div>
       </div>
     </>
   )
