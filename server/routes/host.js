@@ -17,6 +17,21 @@ router.get('/getallrooms',fetchUser,async(req,res)=>{
         res.status(500).json({execution});
     }
 });
+
+router.post('/deleteroom',fetchUser,async(req,res)=>{
+    let execution=true;
+    try {
+        
+        await Room.deleteOne({hostid:req.user.id,roomId:req.body.roomId});
+        const room= await Room.find({hostid:req.user.id});
+        res.status(200).json({execution,room});
+        
+    } catch (error) {
+        execution=false;
+        console.log(error);
+        res.status(500).json({execution});
+    }
+});
  
 
 

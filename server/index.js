@@ -36,7 +36,7 @@ connectToDatabase();
 
 //routes
 app.use(`/${apiKey}/authentication`,require('./routes/authentication'));
-// app.use(`/${apiKey}/host`,require('./routes/host'));
+app.use(`/${apiKey}/host`,require('./routes/host'));
 // app.use(`//${apiKey}member`,require('./routes/member'));
 
 

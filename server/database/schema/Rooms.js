@@ -5,7 +5,7 @@ const rooms = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
-    hostname:{
+    hostname: {
         type: String,
         ref: 'user'
     },
@@ -13,14 +13,27 @@ const rooms = new mongoose.Schema({
         type: String,
         default: ''
     },
-    validDate:{
-        type:Date,
-        default:Date.now()
+    validDate: {
+        type: Date,
+        default: Date.now()
     },
     members: {
-        type: [String],
+        type: [
+            {
+                id: { 
+                    type: mongoose.Schema.Types.ObjectId, 
+                    ref: 'user' 
+                },
+                memberName: {
+                    type: String
+                }
+            }
+        ],
         default: []
     }
 });
+
+module.exports = mongoose.model('rooms', rooms);
+
 
 module.exports = mongoose.model('rooms', rooms);

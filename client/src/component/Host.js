@@ -28,7 +28,6 @@ const Host = () => {
     };
     const handleBeforeUnload = (event) => {
       event.preventDefault();
-
     };
     const handleAfterUnload = (event) => {
       event.preventDefault();
@@ -44,8 +43,9 @@ const Host = () => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     window.addEventListener("load", handleAfterUnload);
     socket.on("member-details", (allmembers) => {
-      setMemberlist(allmembers);
-    })
+      console.log(allmembers);
+      allmembers!=null?setMemberlist(allmembers):setMemberlist([]);
+    });
     socket.on("creator-room-info", handleRoomInfo);
   }, [socket, navigate]);
 
@@ -78,7 +78,7 @@ const Host = () => {
           <div className="memberlist">
             <p style={{ color: '#9ef01a' }}>Name</p>
             {memberlist.map((members, index) => {
-              return <p key={index} style={{ color: '#9ef01a' }}>{members}</p>
+              return <p key={index} style={{ color: '#9ef01a' }}>{members.memberName}</p>
             })}
           </div>
         </div>

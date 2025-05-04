@@ -28,7 +28,6 @@ const Home = () => {
   const handleJoinRoomHandle = async (e) => {
     try {
       e.preventDefault();
-      createRoom();
       navigate('/memberinfo');
     } catch (error) {
       seterrorflag(500);

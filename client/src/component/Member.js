@@ -3,11 +3,13 @@ import '../styles/Member.css';
 import { UseStateVariableContext } from '../context/useStateVariables';
 import { EnvVariableContext } from '../context/envVariables';
 import LeaderboardComponent from './LeaderboardComponent';
+import { useNavigate } from 'react-router-dom';
 
 const Member = () => {
     const { socket } = useContext(EnvVariableContext) || {};
     const { isdisable, ROOMID, NAME } = useContext(UseStateVariableContext);
     const [timeMappingList, setTimeMappingList] = useState([]);
+    const navigate = useNavigate();
 
     const buzzerClick = (e) => {
         e.preventDefault();
@@ -48,8 +50,11 @@ const Member = () => {
     }, [socket, handlePressInfo, handleResetLeaderboard]);
 
     const leaveRoom = () => {
-        socket?.emit('leave-room', ROOMID, NAME);
-        window.location.reload();
+        const decision=window.confirm("Are you want to leave?");
+        if(decision){
+            navigate("/");
+            socket?.emit('leave-room',localStorage.getItem('token'), ROOMID);
+        }
     };
 
     return (

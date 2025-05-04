@@ -1,29 +1,29 @@
-const {  createNewRoom } = require("../../controllers/createSocketController");
-const { fetchUserData } = require("../../middleware/fetchUserData");
+const { createNewRoom,getHostNameByRoomId, checkRoomIsPresent } = require("../../controllers/roomController");
+const { fetchUserData } = require("../../controllers/userController");
+
 
 module.exports = (io, socket) => {
-    try {
-        socket.on('create-room', async(token) => {
-            //data extraction
-            const user=fetchUserData(token);
-            //new room creation
-            const newRoom=await createNewRoom(user);
-            
-            const roomid=newRoom.roomId;
-            const hostname=newRoom.hostname;
-            success=true;
-            //socket calling
+    socket.on('create-room', async (token) => {
+        try {
+            const user = await fetchUserData(token);
+            const newRoom = await createNewRoom(user);
+
+            const roomid = newRoom.roomId;
+            const hostname = newRoom.hostname;
+
             socket.join(roomid);
-            io.to(roomid).emit('creator-room-info',hostname , roomid);
-    
-        });
-        
-    } catch (error) {
-        io.to(roomid).emit('server-error');
-    }
-    
-    
+            io.to(roomid).emit('creator-room-info', hostname, roomid);
 
+        } catch (error) {
+            io.to(socket.id).emit('server-error');
+        }
+    });
 
-} 
-
+    socket.on('host-rejoin-room', async(roomId) => {
+        socket.join(roomId);
+        const hostName =await getHostNameByRoomId(roomId); 
+        socket.emit("creator-room-info", hostName, roomId);
+        const room=await checkRoomIsPresent(roomId);
+        io.to(roomId).emit("member-details", room.members);
+    })
+};
