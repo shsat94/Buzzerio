@@ -20,12 +20,7 @@ router.post('/signup',async(req,res)=>{
     try {
         let userisPresent=false;
         let user=await User.findOne({email:req.body.email});
-        let mob=await User.findOne({mobileNo:req.body.mobileNo});
         if(user){
-            userisPresent=true;
-            return res.status(422).json({userisPresent});
-        }
-        if(mob){
             userisPresent=true;
             return res.status(422).json({userisPresent});
         }
@@ -36,7 +31,6 @@ router.post('/signup',async(req,res)=>{
         user=await User.create({
             name:req.body.name,
             email:req.body.email,
-            mobileNo:req.body.mobileNo,
             password:securePassword
         });
 
@@ -70,6 +64,7 @@ router.post('/signin',async(req,res)=>{
         }
         const comparePassword=await bcrypt.compare(req.body.password,user.password);
         if (!comparePassword) {
+            login=false;
             return res.status(422).json({login});
         }
         const data={
@@ -93,10 +88,10 @@ router.post('/signin',async(req,res)=>{
 router.post('/sendotptomail',async(req,res)=>{
     let execution=true;
     try {
-        let userisPresent=false;
+        let userisPresent=true;
         let user=await User.findOne({email:req.body.email});
         if(!user){
-            res.status(404).json({userisPresent});
+            userisPresent=false;
         }
         const generatedEmailOtp=Math.floor(100000 + Math.random() * 900000);
         const transporter = nodemailer.createTransport({
@@ -118,10 +113,11 @@ router.post('/sendotptomail',async(req,res)=>{
         let errorinOTP=false;
         transporter.sendMail(reciever,(error,info)=>{
             if (error) {
+                console.log(error);
                 errorinOTP=true;
                 res.status(500).json({errorinOTP});
               } else {
-                res.status(200).json({generatedEmailOtp});
+                res.status(200).json({generatedEmailOtp,userisPresent});
               }
         });
     } catch (error) {

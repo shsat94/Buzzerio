@@ -18,11 +18,6 @@ exports.leaveRoom = async (roomid, user) => {
         if (!room) {
             return { execution: false, message: 'Room not found' };
         }
-        for(i=0;i<room.members.length;i++){
-
-            console.log(room.members[i]._id);
-        }
-        console.log(user.id);
         room.members = room.members.filter(member => member.id != user.id);
         if (room.members.length === 0) {
             room.members = [];
@@ -56,8 +51,6 @@ exports.saveMemberInRoom = async (roomid, user) => {
     try {
         const room = await Rooms.findOne({ roomId: roomid });
         if (!room) return false;
-        console.log(user.id);
-        console.log(user._id);
         const member = { id: user.id, memberName: user.name };
         const memberExists = room.members.some(memberObj => memberObj.id == user.id);
 
