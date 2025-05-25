@@ -60,7 +60,7 @@ router.post('/signin',async(req,res)=>{
         let user=await User.findOne({email:req.body.email});
         if(!user){
             login=false;
-            res.status(404).json({login})
+            return res.status(404).json({login});
         }
         const comparePassword=await bcrypt.compare(req.body.password,user.password);
         if (!comparePassword) {
@@ -96,7 +96,7 @@ router.post('/sendotptomail',async(req,res)=>{
         const generatedEmailOtp=Math.floor(100000 + Math.random() * 900000);
         const transporter = nodemailer.createTransport({
             service:'gmail',
-            secure: true,
+            secure: false,
             port:nodemailerPort,
             auth:{
                 user:nodemailerEmail,

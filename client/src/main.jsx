@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import './index.css';
@@ -9,17 +8,16 @@ import { AlertProvider } from './contextApi/Alert.jsx';
 import { Authentication } from './contextApi/Authentication.jsx';
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <AlertProvider>
-      <Authentication>
-        <LoadingProvider>
-          <StateVariable>
-            <EnvVariables>
-              <App />
-            </EnvVariables>
-          </StateVariable>
-        </LoadingProvider>
-      </Authentication>
-    </AlertProvider>
-  </StrictMode>,
+
+  <AlertProvider>
+    <Authentication>
+      <LoadingProvider>
+        <StateVariable>
+          <EnvVariables>
+            <App />
+          </EnvVariables>
+        </StateVariable>
+      </LoadingProvider>
+    </Authentication>
+  </AlertProvider>,
 )

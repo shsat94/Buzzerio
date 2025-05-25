@@ -5,8 +5,8 @@ import { useLoading } from '../contextApi/Load';
 
 // Assuming you have a context for rooms and socket
 const AvailableRooms = () => {
-  // State for rooms data
-  const [rooms, setRooms] = useState([]);
+  // State for rooms data 
+  const [rooms, setRooms] = useState([]); 
   const { setIsLoading } = useLoading();
   const [error, setError] = useState(null);
   const {cpRooms}=useStateVariable();
@@ -23,9 +23,10 @@ const AvailableRooms = () => {
   useEffect(() => {
     // Simulate fetching rooms
     setTimeout(() => {
+      console.log(cpRooms);
         let upcommingRooms=[]
         cpRooms.forEach(room => {
-            upcommingRooms.push({id:room.id,memberCount:room.members.length - 1})
+            upcommingRooms.push({id:room.roomId,memberCount:room.members.length - 1})
         });
       setRooms(upcommingRooms);
       setIsLoading(false);
@@ -70,7 +71,6 @@ const AvailableRooms = () => {
       if (!response.ok) {
         throw new Error("Failed to delete room");
       }
-      
       // Update room list by removing the deleted room
       setRooms(rooms.filter(room => room.id !== selectedRoomId));
       setShowDeleteModal(false);
@@ -101,7 +101,7 @@ const AvailableRooms = () => {
   };
 
   return (
-    <div className="min-h-screen  pt-20 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-8 overflow-x-hidden">
+    <div className="min-h-screen  pt-20 bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 p-8 overflow-x-hidden ">
       <div className="relative w-full h-full">
         {/* Decorative elements */}
         <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 opacity-20 blur-xl"></div>
@@ -114,9 +114,9 @@ const AvailableRooms = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pr-2">
-              {rooms.map(room => (
+              {rooms.map((room,index) => (
                 <RoomCard 
-                  key={room.id}
+                  key={index}
                   roomId={room.id}
                   memberCount={room.memberCount}
                   onJoin={() => openJoinModal(room.id)}

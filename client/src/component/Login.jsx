@@ -82,7 +82,7 @@ const LoginPage = () => {
       if (loginSuccess) {
         setIsLoading(false);
         PopAlert('success', "Logged in successfully!", () => {
-          navigate('/');
+          navigate('/home');
         });
         
       } else{
