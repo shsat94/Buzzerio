@@ -38,6 +38,7 @@ exports.leaveRoom = async (roomid, user) => {
 exports.checkRoomIsPresent = async (roomid) => {
     try {
         const room = await Rooms.findOne({ roomId: roomid });
+        console.log(room);
         if (!room) {
             return false;
         }
@@ -95,7 +96,7 @@ exports.createNewRoom = async (user) => {
     }
 };
 
-exports.getHostNameByRoomId=async(roomId)=>{
+exports.getHostNameByRoomId = async (roomId) => {
     try {
         const room = await Rooms.findOne({ roomId: roomId });
         return room.hostname;
@@ -103,5 +104,19 @@ exports.getHostNameByRoomId=async(roomId)=>{
     } catch (error) {
         console.error(error);
         return { execution: false, error: error.message };
+    }
+}
+
+exports.closeRoom = async (roomId) => {
+    try {
+
+        await Rooms.deleteOne({ roomId: roomId });
+        // const room = await Rooms.find({ hostid: req.user.id });
+        
+        // const room = await Rooms.findOne({ roomId: roomId });
+        // return room.hostname;
+
+    } catch (error) {
+        console.error(error);
     }
 }

@@ -162,6 +162,7 @@ const LandingPage = () => {
   );
 
   const handleDashboardClick = () => navigate('/home');
+  const handleLoginClick = () => navigate('/login');
 
   const LoginSection = () => (
     <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20 shadow-2xl">
@@ -169,7 +170,7 @@ const LandingPage = () => {
       {localStorage.getItem('token') == null ? (
         <div className="space-y-4">
           <button
-            onClick={() => navigate('/login')}
+            onClick={handleLoginClick}
             className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-4 px-8 rounded-2xl font-semibold text-lg hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             Continue with Login

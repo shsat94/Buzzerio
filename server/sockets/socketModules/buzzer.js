@@ -1,4 +1,4 @@
-const { leaveRoom, checkRoomIsPresent } = require("../../controllers/roomController");
+const { leaveRoom, checkRoomIsPresent, closeRoom } = require("../../controllers/roomController");
 const { fetchUserData } = require("../../controllers/userController");
 
 module.exports = (io, socket) => {  
@@ -19,7 +19,13 @@ module.exports = (io, socket) => {
         const user = fetchUserData(token);
         socket.leave(roomid);
         await leaveRoom(roomid, user);
-        const room = checkRoomIsPresent(roomid);
+        const room = await checkRoomIsPresent(roomid);
+        console.log(room.members);
         io.to(roomid).emit("member-details", room.members);   
+    });
+
+    socket.on('close-room', async (roomid) => {
+        await closeRoom(roomid);
+        io.to(roomid).emit("room-deleted");   
     });
 };

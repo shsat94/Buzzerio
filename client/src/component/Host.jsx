@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { EnvVariableContext } from '../contextApi/envVariables';
 import { useLoading } from '../contextApi/Load';
+import { useNavigate } from 'react-router-dom';
 
 const HostLeaderboard = () => {
   const [roomId,setRoomId] = useState("");
@@ -33,6 +34,7 @@ const HostLeaderboard = () => {
   const animationRef = useRef(null);
   const{socket}= useContext(EnvVariableContext);
   const { setIsLoading } = useLoading();
+  const navigate=useNavigate();
 
 
 
@@ -57,6 +59,7 @@ const HostLeaderboard = () => {
     });
     socket.on("member-details", (allmembers) => {
       console.log(allmembers);
+      console.log("gg");
       allmembers!=null?setMembers(allmembers):setMembers([]);
     });
   }, [socket]);
@@ -129,8 +132,10 @@ const HostLeaderboard = () => {
   };
 
   const closeRoom = () => {
+    socket.emit('close-room',roomId);
     showToast('Room closed successfully!', 'success');
     setShowCloseConfirm(false);
+    navigate('/home');
   };
 
   const getPositionIcon = (position) => {

@@ -15,6 +15,8 @@ import {
 import { useLoading } from '../contextApi/Load';
 import { useStateVariable } from '../contextApi/StateVariables';
 import { EnvVariableContext } from '../contextApi/envVariables';
+import { useAlert } from '../contextApi/Alert';
+import { useNavigate } from 'react-router-dom';
 
 const BuzzerMemberPage = () => {
   const [roomId, setRoomId] = useState('');
@@ -30,6 +32,8 @@ const BuzzerMemberPage = () => {
   const { setIsLoading } = useLoading();
   const { cpRoomId, setCpRoomId, cpName, setCpName } = useStateVariable();
   const { socket } = useContext(EnvVariableContext);
+  const { PopAlert, closeAlert } = useAlert();
+  const navigate=useNavigate();
 
   // Set loading to false on mount
   useEffect(() => {
@@ -123,6 +127,28 @@ const BuzzerMemberPage = () => {
     };
   }, [socket]);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    const action=()=>{
+      navigate('/home');
+    }
+
+
+    const handleClosedRoom = () => {
+      closeAlert();
+      PopAlert('error', "This room has been closed.", action, "Go to homepage");
+      navigate('/home');
+    };
+
+    socket.on("room-deleted", handleClosedRoom);
+
+    // Cleanup function
+    return () => {
+      socket.off("room-deleted", handleClosedRoom);
+    };
+  }, [socket]);
+
   // Handle buzzer click
   const handleBuzzerClick = (e) => {
     if (buzzerClicked || !connected || !socket) return;
@@ -159,13 +185,11 @@ const BuzzerMemberPage = () => {
 
   // Handle leave room
   const handleLeaveRoom = () => {
-    if (socket) {
-      socket.emit('leave-room', roomId, memberName);
-    }
-    console.log('Socket emit: leave-room', roomId, memberName);
+
+      socket.emit('leave-room',localStorage.getItem('token'), roomId);
     setShowLeaveModal(false);
     // Navigate away or handle leaving
-    window.history.back();
+    navigate('/home');
   };
 
   const getPositionIcon = (position) => {
