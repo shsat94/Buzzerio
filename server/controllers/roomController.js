@@ -38,7 +38,7 @@ exports.leaveRoom = async (roomid, user) => {
 exports.checkRoomIsPresent = async (roomid) => {
     try {
         const room = await Rooms.findOne({ roomId: roomid });
-        console.log(room);
+        (room);
         if (!room) {
             return false;
         }

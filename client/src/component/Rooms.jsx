@@ -2,6 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { X, Users, ArrowRight, Trash2, Loader2 } from 'lucide-react';
 import { useStateVariable } from '../contextApi/StateVariables';
 import { useLoading } from '../contextApi/Load';
+import { EnvVariableContext } from '../contextApi/envVariables';
+import { useNavigate } from 'react-router-dom';
 
 // Assuming you have a context for rooms and socket
 const AvailableRooms = () => {
@@ -10,6 +12,7 @@ const AvailableRooms = () => {
   const { setIsLoading } = useLoading();
   const [error, setError] = useState(null);
   const {cpRooms}=useStateVariable();
+  const{host,apiKey,socket}=useContext(EnvVariableContext);
   
   // States for modals
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -20,10 +23,14 @@ const AvailableRooms = () => {
   const [deletingRoom, setDeletingRoom] = useState(false);
   const [joiningRoom, setJoiningRoom] = useState(false);
 
+  const {setNewRoom,rejoinRoomId,setRejoinRoomId}=useStateVariable();
+
+  const navigate=useNavigate();
+
   useEffect(() => {
     // Simulate fetching rooms
     setTimeout(() => {
-      console.log(cpRooms);
+      (cpRooms);
         let upcommingRooms=[]
         cpRooms.forEach(room => {
             upcommingRooms.push({id:room.roomId,memberCount:room.members.length - 1})
@@ -38,12 +45,13 @@ const AvailableRooms = () => {
     setJoiningRoom(true);
     
     try {
-      console.log("Emitting socket event: host-rejoin-room", selectedRoomId);
-      
-      setTimeout(() => {
-        setJoiningRoom(false);
-        setShowJoinModal(false);
-      }, 1000);
+      setNewRoom(false);
+      ("Emitting socket event: host-rejoin-room", selectedRoomId);
+      (selectedRoomId);
+      navigate("/host");
+      setRejoinRoomId(selectedRoomId);
+      setJoiningRoom(false);
+      setShowJoinModal(false);
     } catch (err) {
       setError("Failed to join room");
       setJoiningRoom(false);
@@ -55,11 +63,10 @@ const AvailableRooms = () => {
     setDeletingRoom(true);
     
     try {
-      const apiKey = "your-api-key"; 
       const authToken = localStorage.getItem("token");
       
       // Make API call to delete room
-      const response = await fetch(`/${apiKey}/host/deleteroom`, {
+      const response = await fetch(`${host}/${apiKey}/host/deleteroom`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

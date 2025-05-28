@@ -18,8 +18,8 @@ const OTPInput = () => {
   const navigate = useNavigate();
   const { setIsLoading } = useLoading();
   const { host, apiKey } = useContext(EnvVariableContext);
-  const { setOneTimePassword, setIsUserPresent } = useStateVariable();
-  const{cpEmail}=useAuthentication();
+  const { setOneTimePassword, setIsUserPresent, isForgotPassword, setIsForgotPassword } = useStateVariable();
+  const { cpEmail } = useAuthentication();
 
   const inputRefs = useRef([]);
 
@@ -45,7 +45,7 @@ const OTPInput = () => {
           inputRefs.current[0].focus();
         }
       }, 300); // Short delay to allow fade-in animation
-      
+
       return () => clearTimeout(focusTimer);
     }
   }, [fadeIn]);
@@ -53,7 +53,7 @@ const OTPInput = () => {
   // Handle countdown timer
   useEffect(() => {
     let interval;
-    
+
     if (isTimerRunning && countdown > 0) {
       interval = setInterval(() => {
         setCountdown(prevCountdown => prevCountdown - 1);
@@ -61,7 +61,7 @@ const OTPInput = () => {
     } else if (countdown === 0) {
       setIsTimerRunning(false);
     }
-    
+
     return () => clearInterval(interval);
   }, [isTimerRunning, countdown]);
 
@@ -85,7 +85,7 @@ const OTPInput = () => {
       }
       return null;
     });
-    
+
     return () => {
       timeouts.forEach(timeout => {
         if (timeout) clearTimeout(timeout);
@@ -96,18 +96,18 @@ const OTPInput = () => {
   // Handle digit input
   const handleChange = (e, index) => {
     const value = e.target.value;
-    
+
     // Only allow numbers
     if (value && !/^[0-9]$/.test(value)) {
       return;
     }
-    
+
     setOtp(prevOtp => {
       const newOtp = [...prevOtp];
       newOtp[index] = value;
       return newOtp;
     });
-    
+
     if (value) {
       // Show digit temporarily
       setShowDigits(prev => {
@@ -115,7 +115,7 @@ const OTPInput = () => {
         updated[index] = true;
         return updated;
       });
-      
+
       // Move focus to next input
       if (index < 5) {
         inputRefs.current[index + 1].focus();
@@ -135,15 +135,15 @@ const OTPInput = () => {
   const handleSubmit = () => {
     // Set loading state before verification
     setIsLoading(true);
-    
+
     // Small delay to show loading state
     setTimeout(() => {
       const enteredOtp = otp.join('');
-      
+
       if (enteredOtp != oneTimePassword) {
         setIsLoading(false);
         setIsIncorrect(true);
-        
+
         // Reset after animation completes
         setTimeout(() => {
           setIsIncorrect(false);
@@ -151,31 +151,35 @@ const OTPInput = () => {
           inputRefs.current[0].focus();
         }, 1000);
       } else {
-        // Keep loading state active during navigation
-        navigate('/name');
+        if (isForgotPassword) {
+          setIsForgotPassword(false);
+          navigate('/resetpassword')
+        } else {
+          navigate('/name');
+        }
       }
     }, 500);
   };
 
   // Resend OTP
-  const handleResendOtp =async () => {
+  const handleResendOtp = async () => {
     // Show loading when resending
     setIsLoading(true);
-    
-    setTimeout(async() => {
+
+    setTimeout(async () => {
       setOtp(['', '', '', '', '', '']);
       setCountdown(60);
       setIsTimerRunning(true);
       setIsIncorrect(false);
       setIsLoading(false);
-      
+
       // Focus after a short delay
       setTimeout(() => {
         inputRefs.current[0].focus();
       }, 100);
       await sendOtp(cpEmail, host, apiKey, setOneTimePassword, setIsUserPresent);
-      
-      
+
+
     }, 700);
   };
 
@@ -188,17 +192,16 @@ const OTPInput = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100 p-4">
-      <div 
-        className={`w-full max-w-md p-8 bg-white rounded-xl shadow-xl border-t-4 border-indigo-600 transition-all duration-500 ${
-          fadeIn ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
-        }`}
+      <div
+        className={`w-full max-w-md p-8 bg-white rounded-xl shadow-xl border-t-4 border-indigo-600 transition-all duration-500 ${fadeIn ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+          }`}
       >
         <h2 className="text-3xl font-bold text-center text-indigo-800 mb-2">OTP Verification</h2>
         <p className="text-center text-indigo-600 mb-8">
           Enter the 6-digit code sent to your device
         </p>
-        
-        <div 
+
+        <div
           className={`flex justify-between mb-8 ${isIncorrect ? 'animate-otp-error' : ''}`}
           style={{
             animationName: isIncorrect ? 'shake, fall' : 'none',
@@ -216,13 +219,12 @@ const OTPInput = () => {
                 value={showDigits[index] ? digit : ''}
                 onChange={(e) => handleChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className={`w-12 h-12 text-center text-xl font-bold rounded-lg border-2 focus:outline-none transition-all duration-300 shadow-md ${
-                  isComplete 
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700' 
-                    : digit 
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-800' 
+                className={`w-12 h-12 text-center text-xl font-bold rounded-lg border-2 focus:outline-none transition-all duration-300 shadow-md ${isComplete
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                    : digit
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-800'
                       : 'border-red-400 bg-red-50 text-gray-700'
-                }`}
+                  }`}
                 style={{
                   aspectRatio: '1/1',
                 }}
@@ -236,19 +238,18 @@ const OTPInput = () => {
             </div>
           ))}
         </div>
-        
+
         <button
           onClick={handleSubmit}
           disabled={!isComplete}
-          className={`w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 shadow-md ${
-            isComplete
+          className={`w-full py-4 rounded-lg font-bold text-lg transition-all duration-300 shadow-md ${isComplete
               ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 transform hover:-translate-y-1'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
+            }`}
         >
           Verify OTP
         </button>
-        
+
         <div className="mt-6 text-center">
           {isTimerRunning ? (
             <p className="text-indigo-600 font-medium">
@@ -266,7 +267,7 @@ const OTPInput = () => {
           )}
         </div>
       </div>
-      
+
       <style jsx global>{`
         @keyframes shake {
           0%, 100% { transform: translateX(0); }

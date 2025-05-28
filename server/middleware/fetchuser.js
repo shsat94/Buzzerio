@@ -14,7 +14,7 @@ const fetchUser=(req,res,next)=>{
         next();
     } catch (error) {
         execution=false;
-        console.log(error);
+        (error);
         res.status(500).json({execution});
     }
 };

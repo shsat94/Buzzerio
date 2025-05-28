@@ -31,7 +31,7 @@ export default function ProfilePopup() {
       fileInputRef.current.click();
     } else {
       // In a real app, you would access the device camera here
-      console.log("Access camera");
+      ("Access camera");
     }
     setIsUploadModalOpen(false);
   };
@@ -51,7 +51,7 @@ export default function ProfilePopup() {
   
   const handleLogout = () => {
     // Handle the logout operation here
-    console.log("Logging out...");
+    ("Logging out...");
     setIsLogoutModalOpen(false);
     setIsOpen(false);
   };

@@ -9,7 +9,7 @@ exports.fetchUserData=(token,res)=>{
             
         } catch (error) {
             execution=false;
-            console.log(error);
+            (error);
             res.send(500).json({execution});
         }
 }; 

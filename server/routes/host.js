@@ -13,7 +13,7 @@ router.get('/getallrooms',fetchUser,async(req,res)=>{
         
     } catch (error) {
         execution=false;
-        console.log(error);
+        (error);
         res.status(500).json({execution});
     }
 });
@@ -28,7 +28,7 @@ router.post('/deleteroom',fetchUser,async(req,res)=>{
         
     } catch (error) {
         execution=false;
-        console.log(error);
+        (error);
         res.status(500).json({execution});
     }
 });

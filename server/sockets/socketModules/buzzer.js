@@ -20,7 +20,7 @@ module.exports = (io, socket) => {
         socket.leave(roomid);
         await leaveRoom(roomid, user);
         const room = await checkRoomIsPresent(roomid);
-        console.log(room.members);
+        (room.members);
         io.to(roomid).emit("member-details", room.members);   
     });
 

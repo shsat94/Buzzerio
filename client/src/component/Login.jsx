@@ -17,6 +17,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { setIsLoading } = useLoading();
   const { PopAlert, closeAlert } = useAlert();
+  
 
   // Email validation function
   const validateEmail = (email) => {
@@ -60,7 +61,7 @@ const LoginPage = () => {
 
   // Handle Google sign in
   const handleGoogleSignIn = () => {
-    console.log('Google sign-in initiated');
+    ('Google sign-in initiated');
     // Placeholder for Google authentication logic
   };
 
@@ -179,7 +180,7 @@ const LoginPage = () => {
 
           {/* Forgot Password Link */}
           <div className="text-right">
-            <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors duration-300">
+            <a href="/forgotpassword" className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors duration-300">
               Forgot password?
             </a>
           </div>

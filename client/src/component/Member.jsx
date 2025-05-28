@@ -70,7 +70,7 @@ const BuzzerMemberPage = () => {
     if (!socket) return;
 
     const handlePressInfo = (memname, time) => {
-      console.log('Received press-info:', memname, time);
+      ('Received press-info:', memname, time);
       setLeaderboard((prevList) => {
         const newPosition = prevList.length + 1;
         const newEntry = {
@@ -89,7 +89,7 @@ const BuzzerMemberPage = () => {
     };
 
     const handleResetLeaderboard = () => {
-      console.log('Received reset-leaderboard event');
+      ('Received reset-leaderboard event');
       setBuzzerClicked(false);
       setLeaderboard([]);
       setClickTime(null);
@@ -112,7 +112,7 @@ const BuzzerMemberPage = () => {
 
 
     const handleResetLeaderboard = () => {
-      console.log('Received reset-leaderboard event');
+      ('Received reset-leaderboard event');
       setBuzzerClicked(false);
       setLeaderboard([]);
       setClickTime(null);
@@ -174,7 +174,7 @@ const BuzzerMemberPage = () => {
     setBuzzerClicked(true);
 
     // Emit socket event
-    console.log('Emitting clicked-time:', roomId, memberName);
+    ('Emitting clicked-time:', roomId, memberName);
     socket.emit('clicked-time', roomId, memberName);
     
     // Vibrate if supported

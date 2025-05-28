@@ -22,8 +22,11 @@ module.exports = (io, socket) => {
     socket.on('host-rejoin-room', async(roomId) => {
         socket.join(roomId);
         const hostName =await getHostNameByRoomId(roomId); 
+        (roomId);
+
         socket.emit("creator-room-info", hostName, roomId);
         const room=await checkRoomIsPresent(roomId);
+        (room);
         io.to(roomId).emit("member-details", room.members);
     })
 };

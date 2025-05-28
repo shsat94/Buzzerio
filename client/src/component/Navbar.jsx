@@ -2,38 +2,10 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Menu, User, X, Upload, Camera, LogOut } from 'lucide-react';
 import { EnvVariableContext } from '../contextApi/envVariables';
 import { useAlert } from '../contextApi/Alert';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useStateVariable } from '../contextApi/StateVariables';
 import { useLoading } from '../contextApi/Load';
-
-// const Link = ({ to, className, onClick, children }) => (
-//   <a
-//     href={to}
-//     className={className}
-//     onClick={(e) => {
-//       e.preventDefault();
-//       if (onClick) onClick();
-//     }}
-//   >
-//     {children}
-//   </a>
-// );
-
-const useLocation = () => {
-  const [pathname, setPathname] = useState(window.location.pathname);
-
-
-  useEffect(() => {
-    const handleLocationChange = () => {
-      setPathname(window.location.pathname);
-    };
-
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
-
-  return { pathname };
-};
+import { getUserDetails } from '../controller/AuthenticationController';
 
 const Navbar = () => {
   const { apiKey, host } = useContext(EnvVariableContext);
@@ -41,7 +13,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { cpSetRooms } = useStateVariable();
   const { PopAlert, closeAlert } = useAlert();
-  const location = useLocation();
+  const location = useLocation(); // Using React Router's useLocation
   const navigate = useNavigate();
   const { setIsLoading } = useLoading();
 
@@ -53,12 +25,10 @@ const Navbar = () => {
   const [profileImage, setProfileImage] = useState("/api/placeholder/150/150");
   const fileInputRef = useRef(null);
 
-  // Mock user data (In real app, this would come from your auth context or API)
-  const userData = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    roomsLeft: 3
-  };
+  // User data states - Initialize with empty values
+  const [userDataName, setUserDataName] = useState("");
+  const [userDataEmail, setUserDataEmail] = useState("");
+  const [userDataLoading, setUserDataLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -77,9 +47,43 @@ const Navbar = () => {
     navigate('/login');
   };
 
-  const handleProfileClick = (e) => {
+  const handleProfileClick = async (e) => {
     if (e) e.preventDefault();
-    setIsProfileOpen(true);
+    
+    try {
+      ('Profile clicked, fetching user data...');
+      setUserDataLoading(true);
+      
+      // Check if we have the required context values
+      if (!host || !apiKey) {
+        console.error('Missing host or apiKey');
+        PopAlert('error', "Configuration error", () => {}, "OK");
+        return;
+      }
+
+      // Fetch user data
+      const dataOfUser = await getUserDetails(host, apiKey);
+      ('User data received:', dataOfUser);
+      
+      // Check if we got valid data
+      if (dataOfUser && dataOfUser.name && dataOfUser.email) {
+        setUserDataName(dataOfUser.name);
+        setUserDataEmail(dataOfUser.email);
+        ('User data set:', { name: dataOfUser.name, email: dataOfUser.email });
+        
+        // Open modal after data is loaded
+        setIsProfileOpen(true);
+      } else {
+        console.error('Invalid user data received:', dataOfUser);
+        PopAlert('error', "Failed to load user details", () => {}, "OK");
+      }
+      
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      PopAlert('error', "Failed to load user details", () => {}, "OK");
+    } finally {
+      setUserDataLoading(false);
+    }
   };
 
   const action = () => {
@@ -105,7 +109,6 @@ const Navbar = () => {
       const response = await res.json();
       if (response.execution) {
         await cpSetRooms(response.room);
-
         navigate('/rooms');
       } else {
         PopAlert('error', "Failed to load rooms", () => { }, "OK");
@@ -128,16 +131,13 @@ const Navbar = () => {
     if (type === "gallery") {
       fileInputRef.current.click();
     } else {
-      // In a real app, you would access the device camera here
-      console.log("Access camera");
+      ("Access camera");
     }
     setIsUploadModalOpen(false);
   };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      // In a real app, you would handle the file upload to server
-      // Here we're just creating a local URL for demonstration
       const imageUrl = URL.createObjectURL(e.target.files[0]);
       setProfileImage(imageUrl);
     }
@@ -148,11 +148,13 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    // Handle the logout operation here
     localStorage.removeItem('token');
     setIsLoggedIn(false);
     setIsLogoutModalOpen(false);
     setIsProfileOpen(false);
+    // Clear user data on logout
+    setUserDataName("");
+    setUserDataEmail("");
     navigate('/');
   };
 
@@ -222,9 +224,11 @@ const Navbar = () => {
               {isLoggedIn ? (
                 <button
                   onClick={handleProfileClick}
-                  className="flex items-center text-gray-700 hover:text-sky-600 transition-colors duration-300"
+                  disabled={userDataLoading}
+                  className="flex items-center text-gray-700 hover:text-sky-600 transition-colors duration-300 disabled:opacity-50"
                 >
                   <User className="h-6 w-6 hover:scale-110 transition-transform duration-300" />
+                  {userDataLoading && <span className="ml-2 text-xs">Loading...</span>}
                 </button>
               ) : (
                 <Link
@@ -318,6 +322,7 @@ const Navbar = () => {
                 >
                   <User className="mr-3 h-6 w-6" />
                   My Profile
+                  {userDataLoading && <span className="ml-2 text-xs">Loading...</span>}
                 </Link>
               ) : (
                 <Link
@@ -393,7 +398,9 @@ const Navbar = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Name</p>
-                <p className="font-semibold text-gray-800">{userData.name}</p>
+                <p className="font-semibold text-gray-800">
+                  {userDataLoading ? "Loading..." : (userDataName || "No name available")}
+                </p>
               </div>
             </div>
 
@@ -406,7 +413,9 @@ const Navbar = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Email</p>
-                <p className="font-semibold text-gray-800">{userData.email}</p>
+                <p className="font-semibold text-gray-800">
+                  {userDataLoading ? "Loading..." : (userDataEmail || "No email available")}
+                </p>
               </div>
             </div>
 
@@ -418,7 +427,7 @@ const Navbar = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Rooms Left</p>
-                <p className="font-semibold text-gray-800">{userData.roomsLeft}</p>
+                <p className="font-semibold text-gray-800">3</p>
               </div>
             </div>
           </div>
@@ -452,7 +461,7 @@ const Navbar = () => {
           </div>
           <div className="p-4">
             <h3 className="text-lg font-semibold">Profile Photo</h3>
-            <p className="text-gray-500 text-sm">{userData.name}</p>
+            <p className="text-gray-500 text-sm">{userDataName || "User"}</p>
           </div>
         </div>
       </div>

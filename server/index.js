@@ -12,10 +12,9 @@ const socketController = require('./sockets/socketController');
 //env variables
 const port=process.env.PORT;
 const apiKey=process.env.BACKEND_API_KEY;
-const clientUrl=process.env.CLIENT_URL;
 
 const corsOptions = {
-    origin: clientUrl
+    origin: "*"
   }
 
 const app=express();
@@ -46,5 +45,5 @@ socketController(io);
 
 
 server.listen(port,()=>{
-    console.log(`server is listening at port ${port}`);
+    (`server is listening at port ${port}`);
 }); 

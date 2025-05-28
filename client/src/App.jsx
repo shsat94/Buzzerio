@@ -9,6 +9,8 @@ import BuzzerHomepage from "./component/Home";
 import HostLeaderboard from "./component/Host";
 import BuzzerMemberPage from "./component/Member";
 import LandingPage from "./component/LandingPage";
+import ForgotPassword from "./component/ForgotPassword";
+import SetNewPassword from "./component/PasswordReset";
 
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
           <Route exact path='/rooms' element={<AvailableRooms />}></Route>
           <Route exact path='/host' element={<HostLeaderboard />}></Route>
           <Route exact path='/member' element={<BuzzerMemberPage />}></Route>
+          <Route exact path='/forgotpassword' element={<ForgotPassword />}></Route>
+          <Route exact path='/resetpassword' element={<SetNewPassword />}></Route>
         </Routes>
       </BrowserRouter>
     </>

@@ -18,7 +18,7 @@ export default function BuzzerHomepage() {
     const navigate = useNavigate();
     const { socket } = useContext(EnvVariableContext);
     const { setIsLoading } = useLoading();
-    const { cpRoomId, setCpRoomId, cpName, setCpName } = useStateVariable();
+    const { setNewRoom, setCpRoomId, cpName, setCpName } = useStateVariable();
 
     useEffect(() => {
         // Trigger button animations after component mounts
@@ -40,6 +40,7 @@ export default function BuzzerHomepage() {
     const handleCreateRoom = async () => {
         setShowCreateModal(false);
         setIsLoading(true);
+        setNewRoom(true);
         navigate("/host");
 
     };

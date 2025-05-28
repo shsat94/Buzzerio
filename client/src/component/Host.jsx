@@ -17,10 +17,11 @@ import {
 import { EnvVariableContext } from '../contextApi/envVariables';
 import { useLoading } from '../contextApi/Load';
 import { useNavigate } from 'react-router-dom';
+import { useStateVariable } from '../contextApi/StateVariables';
 
 const HostLeaderboard = () => {
   const [roomId,setRoomId] = useState("");
-  const [hostName,setHostName] = useState("");
+  const [hostName,setHostName] = useState("hi");
   const [leaderboard, setLeaderboard] = useState([]);
   const [members,setMembers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
@@ -35,35 +36,44 @@ const HostLeaderboard = () => {
   const{socket}= useContext(EnvVariableContext);
   const { setIsLoading } = useLoading();
   const navigate=useNavigate();
+  const {newRoom,rejoinRoomId}=useStateVariable();
 
 
 
 
   useEffect(()=>{
+    if(newRoom){
     socket.emit("create-room", localStorage.getItem("token"));
-    console.log("srfrrafa");
+    ("srfrrafa");
+    }
+    else{
+      (rejoinRoomId);
+      socket.emit("host-rejoin-room",rejoinRoomId);
+    }
   },[]);
+ 
 
   useEffect(() => {
     if (!socket) return;
     const handleRoomInfo = (hostname, roomid) => {
-      console.log('Received from socket:', hostname, roomid);
+      ('Received from socket:', hostname, roomid);
       setHostName(hostname);
       setRoomId(roomid);
     };
   
     socket.on('creator-room-info', handleRoomInfo);
+    
 
     socket.on("update-host-leader", (timemaplist) => {
       setLeaderboard(timemaplist);
     });
     socket.on("member-details", (allmembers) => {
-      console.log(allmembers);
-      console.log("gg");
+      (allmembers);
+      ("gg");
       allmembers!=null?setMembers(allmembers):setMembers([]);
     });
   }, [socket]);
-  
+
   // Handle tab visibility
   useEffect(() => {
     setIsLoading(false);

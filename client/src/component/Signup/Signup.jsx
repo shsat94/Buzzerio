@@ -13,7 +13,7 @@ const EmailValidationForm = () => {
   const [isDirty, setIsDirty] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { host, apiKey } = useContext(EnvVariableContext);
-  const { setOneTimePassword, isUserPresent, setIsUserPresent } = useStateVariable();
+  const { setOneTimePassword, isUserPresent, setIsUserPresent,setIsForgotPassword } = useStateVariable();
   const { setIsLoading } = useLoading();
   const { PopAlert } = useAlert();
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const EmailValidationForm = () => {
         // Important: DO NOT reset loading state here!
         // We want to keep the loading state active during navigation
         // The OTP component will handle turning it off
-        
+        setIsForgotPassword(false);
         setEmail('');
         setIsDirty(false);
         navigate('/verifyotp');
