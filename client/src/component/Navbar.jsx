@@ -63,12 +63,14 @@ const Navbar = () => {
 
       // Fetch user data
       const dataOfUser = await getUserDetails(host, apiKey);
+      console.log(dataOfUser);
       ('User data received:', dataOfUser);
       
       // Check if we got valid data
       if (dataOfUser && dataOfUser.name && dataOfUser.email) {
         setUserDataName(dataOfUser.name);
         setUserDataEmail(dataOfUser.email);
+        setProfileImage(dataOfUser.profilePicture);
         ('User data set:', { name: dataOfUser.name, email: dataOfUser.email });
         
         // Open modal after data is loaded

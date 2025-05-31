@@ -23,7 +23,7 @@ const AvailableRooms = () => {
   const [deletingRoom, setDeletingRoom] = useState(false);
   const [joiningRoom, setJoiningRoom] = useState(false);
 
-  const {setNewRoom,rejoinRoomId,setRejoinRoomId}=useStateVariable();
+  const {setNewRoom,setRejoinRoomId}=useStateVariable();
 
   const navigate=useNavigate();
 

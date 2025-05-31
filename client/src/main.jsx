@@ -6,9 +6,9 @@ import { StateVariable } from './contextApi/StateVariables.jsx';
 import { LoadingProvider } from './contextApi/Load.jsx';
 import { AlertProvider } from './contextApi/Alert.jsx';
 import { Authentication } from './contextApi/Authentication.jsx';
-
+import {GoogleOAuthProvider} from '@react-oauth/google';
 createRoot(document.getElementById('root')).render(
-
+<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH}>
   <AlertProvider>
     <Authentication>
       <LoadingProvider>
@@ -19,5 +19,6 @@ createRoot(document.getElementById('root')).render(
         </StateVariable>
       </LoadingProvider>
     </Authentication>
-  </AlertProvider>,
+  </AlertProvider>
+  </GoogleOAuthProvider>
 )

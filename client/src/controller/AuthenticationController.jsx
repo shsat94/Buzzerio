@@ -81,3 +81,75 @@ export const resetPassword = async (cpEmail, password, host, apiKey) => {
   (response.execution);
   return response.execution;
 };
+
+// Add this function to your existing AuthenticationController.js
+
+// Google Authentication function
+export const googleAuth = async (credential, host, apiKey) => {
+  try {
+    const response = await fetch(`${host}/${apiKey}/authentication/google-auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        credential: credential
+      })
+    });
+
+    const data = await response.json();
+    
+    if (data.execution && data.authenticationToken) {
+      // Store the authentication token
+      localStorage.setItem('token', data.authenticationToken);
+      console.log(data);
+      return {
+        success: true,
+        data: data,
+        isNewUser: data.isNewUser,
+        user: data.user
+      };
+    } else {
+      throw new Error(data.error || 'Google authentication failed');
+    }
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    throw new Error(error.message || 'Google authentication failed');
+  }
+};
+
+// Link Google Account function (for existing users who want to add Google sign-in)
+export const linkGoogleAccount = async (credential, host, apiKey) => {
+  try {
+    const authToken = localStorage.getItem('token');
+    if (!authToken) {
+      throw new Error('Please login first to link your Google account');
+    }
+
+    const response = await fetch(`${host}/${apiKey}/authentication/link-google`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      body: JSON.stringify({
+        credential: credential
+      })
+    });
+
+    const data = await response.json();
+    
+    if (data.execution) {
+      return {
+        success: true,
+        message: data.message,
+        user: data.user
+      };
+    } else {
+      throw new Error(data.error || 'Failed to link Google account');
+    }
+  } catch (error) {
+    console.error('Link Google Account Error:', error);
+    throw new Error(error.message || 'Failed to link Google account');
+  }
+};
