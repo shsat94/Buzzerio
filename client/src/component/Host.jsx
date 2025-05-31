@@ -119,15 +119,15 @@ const HostLeaderboard = () => {
 
   const handleShare = (platform) => {
     const shareText = `Join my Buzzer room: ${roomId}`;
-    const shareUrl = `https://buzzer.app/room/${roomId}`;
+    // const shareUrl = `https://buzzer.app/room/${roomId}`;
     
     switch (platform) {
       case 'whatsapp':
-        window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`);
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`);
         break;
-      case 'email':
-        window.open(`mailto:?subject=Join my Buzzer room&body=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`);
-        break;
+      // case 'email':
+      //   window.open(`mailto:?subject=Join my Buzzer room&body=${encodeURIComponent(shareText)}`);
+      //   break;
       case 'copy':
         copyToClipboard();
         break;
