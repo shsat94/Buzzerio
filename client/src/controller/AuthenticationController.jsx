@@ -41,11 +41,9 @@ export const login = async (email, password, host, apiKey) => {
       return true;
     } else {
       // Handle error cases
-      console.error("Login failed:", response);
       return false;
     }
   } catch (error) {
-    console.error("Error during login:", error);
     return false;
   }
 }
@@ -64,7 +62,6 @@ export const getUserDetails = async (host, apiKey) => {
     return response.user;
    
   } catch (error) {
-    console.error("Error during details:", error);
     return false;
   }
 }
@@ -102,7 +99,6 @@ export const googleAuth = async (credential, host, apiKey) => {
     if (data.execution && data.authenticationToken) {
       // Store the authentication token
       localStorage.setItem('token', data.authenticationToken);
-      console.log(data);
       return {
         success: true,
         data: data,
@@ -113,7 +109,6 @@ export const googleAuth = async (credential, host, apiKey) => {
       throw new Error(data.error || 'Google authentication failed');
     }
   } catch (error) {
-    console.error('Google Auth Error:', error);
     throw new Error(error.message || 'Google authentication failed');
   }
 };
@@ -149,7 +144,6 @@ export const linkGoogleAccount = async (credential, host, apiKey) => {
       throw new Error(data.error || 'Failed to link Google account');
     }
   } catch (error) {
-    console.error('Link Google Account Error:', error);
     throw new Error(error.message || 'Failed to link Google account');
   }
 };

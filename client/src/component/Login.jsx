@@ -22,7 +22,6 @@ const LoginPage = () => {
   
 
   const handleGoogleSuccess= async(credentialResponse)=>{
-    console.log(credentialResponse.credential);
     await googleAuth(credentialResponse.credential,host,apiKey);
     closeAlert();
     PopAlert('success', 'Sign In successfully', () => {navigate('/home')});
@@ -100,7 +99,6 @@ const LoginPage = () => {
         PopAlert('error', "Invalid credentials. Please try again.", () => {navigate('/login');});
       }
     } catch (error) {
-      console.error("Login error:", error);
       setIsLoading(false);
       closeAlert();
       PopAlert('error', error.message || "Login failed. Please try again.", () => {});

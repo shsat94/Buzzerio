@@ -23,7 +23,6 @@ const EmailValidationForm = () => {
   const { setCpEmail } = useAuthentication();
 
  const handleGoogleSuccess= async(credentialResponse)=>{
-    console.log(credentialResponse.credential);
     await googleAuth(credentialResponse.credential,host,apiKey);
     closeAlert();
     PopAlert('success', 'Sign In successfully', () => {navigate('/home')});

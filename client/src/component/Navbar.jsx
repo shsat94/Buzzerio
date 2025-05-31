@@ -56,14 +56,12 @@ const Navbar = () => {
       
       // Check if we have the required context values
       if (!host || !apiKey) {
-        console.error('Missing host or apiKey');
         PopAlert('error', "Configuration error", () => {}, "OK");
         return;
       }
 
       // Fetch user data
       const dataOfUser = await getUserDetails(host, apiKey);
-      console.log(dataOfUser);
       ('User data received:', dataOfUser);
       
       // Check if we got valid data
@@ -76,12 +74,10 @@ const Navbar = () => {
         // Open modal after data is loaded
         setIsProfileOpen(true);
       } else {
-        console.error('Invalid user data received:', dataOfUser);
         PopAlert('error', "Failed to load user details", () => {}, "OK");
       }
       
     } catch (error) {
-      console.error('Error fetching user details:', error);
       PopAlert('error', "Failed to load user details", () => {}, "OK");
     } finally {
       setUserDataLoading(false);
