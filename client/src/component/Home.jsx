@@ -64,6 +64,7 @@ export default function BuzzerHomepage() {
         });
 
         socket.on('room-joined', (roomid, memName) => {
+            console.log("joined");
             setShowJoinModal(false);
             setRoomId('');
             setJoinResult(null);

@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Menu, User, X, Upload, Camera, LogOut } from 'lucide-react';
 import { EnvVariableContext } from '../contextApi/envVariables';
 import { useAlert } from '../contextApi/Alert';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useStateVariable } from '../contextApi/StateVariables';
 import { useLoading } from '../contextApi/Load';
 import { getUserDetails } from '../controller/AuthenticationController';
+import { useSearchRoomId } from '../contextApi/Roomid';
+import { checkIsGuest } from '../controller/MemberController';
 
 const Navbar = () => {
   const { apiKey, host } = useContext(EnvVariableContext);
@@ -30,9 +32,29 @@ const Navbar = () => {
   const [userDataEmail, setUserDataEmail] = useState("");
   const [userDataLoading, setUserDataLoading] = useState(false);
 
+  const [searchParams] = useSearchParams();
+  const popupEnabled = searchParams.get('popup') === 'true';
+  const roomId = searchParams.get('roomid');
+  const { setSearchRoomId, setJoinRoomAsGuest } = useSearchRoomId();
   useEffect(() => {
+    if (popupEnabled) {
+      setJoinRoomAsGuest(true);
+      setSearchRoomId(roomId);
+      navigate('/guestroomjoin');
+    }
+  }, [popupEnabled]);
+  
+  const checkLogin=async ()=>{
     const token = localStorage.getItem('token');
-    setIsLoggedIn(token !== null);
+    const isGuest = await checkIsGuest(host, apiKey);
+
+    if (token !== null || !isGuest) {
+      setIsLoggedIn(true);
+    }
+  }
+
+  useEffect(() => {  
+    checkLogin();
   }, [localStorage.getItem('token')]);
 
   const toggleMenu = () => {
@@ -49,36 +71,36 @@ const Navbar = () => {
 
   const handleProfileClick = async (e) => {
     if (e) e.preventDefault();
-    
+
     try {
       ('Profile clicked, fetching user data...');
       setUserDataLoading(true);
-      
+
       // Check if we have the required context values
       if (!host || !apiKey) {
-        PopAlert('error', "Configuration error", () => {}, "OK");
+        PopAlert('error', "Configuration error", () => { }, "OK");
         return;
       }
 
       // Fetch user data
       const dataOfUser = await getUserDetails(host, apiKey);
       ('User data received:', dataOfUser);
-      
+
       // Check if we got valid data
       if (dataOfUser && dataOfUser.name && dataOfUser.email) {
         setUserDataName(dataOfUser.name);
         setUserDataEmail(dataOfUser.email);
         setProfileImage(dataOfUser.profilePicture);
         ('User data set:', { name: dataOfUser.name, email: dataOfUser.email });
-        
+
         // Open modal after data is loaded
         setIsProfileOpen(true);
       } else {
-        PopAlert('error', "Failed to load user details", () => {}, "OK");
+        PopAlert('error', "Failed to load user details", () => { }, "OK");
       }
-      
+
     } catch (error) {
-      PopAlert('error', "Failed to load user details", () => {}, "OK");
+      PopAlert('error', "Failed to load user details", () => { }, "OK");
     } finally {
       setUserDataLoading(false);
     }
@@ -89,7 +111,7 @@ const Navbar = () => {
   };
 
   const handleAvailableRoom = async () => {
-    if (localStorage.getItem('token') == null) {
+    if (localStorage.getItem('token') == null || await checkIsGuest(host, apiKey)) {
       closeAlert();
       PopAlert('warning', "You have to login to proceed", action, "Login");
       return;
@@ -175,12 +197,12 @@ const Navbar = () => {
                 to="/home"
                 className={`text-gray-600 hover:text-sky-600 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${location.pathname === '/home' ? 'text-sky-600 border-b-2 border-sky-600' : ''
                   }`}
-                onClick={(e) => {
-                  if (localStorage.getItem('token') == null) {
+                onClick={async (e) => {
+                  if (!isLoggedIn) {
                     e.preventDefault();
                     closeAlert();
                     PopAlert('warning', "You have to login to proceed", action, "Login");
-                    navigate('/login'); 
+                    navigate('/login');
                   } else {
                     closeMenu();
                   }
@@ -262,8 +284,8 @@ const Navbar = () => {
                 ? 'text-sky-600 bg-sky-50'
                 : 'text-gray-700 hover:text-sky-600 hover:bg-gray-50'
                 } transition-colors duration-300`}
-              onClick={(e) => {
-                if (localStorage.getItem('token') == null) {
+              onClick={async (e) => {
+                if (localStorage.getItem('token') == null || await checkIsGuest(host, apiKey)) {
                   e.preventDefault();
                   closeAlert();
                   PopAlert('warning', "You have to login to proceed", action, "Login");

@@ -17,6 +17,7 @@ import { useStateVariable } from '../contextApi/StateVariables';
 import { EnvVariableContext } from '../contextApi/envVariables';
 import { useAlert } from '../contextApi/Alert';
 import { useNavigate } from 'react-router-dom';
+import { checkIsGuest, deleteGuestUser } from '../controller/MemberController';
 
 const BuzzerMemberPage = () => {
   const [roomId, setRoomId] = useState('');
@@ -31,7 +32,7 @@ const BuzzerMemberPage = () => {
   const audioRef = useRef(null);
   const { setIsLoading } = useLoading();
   const { cpRoomId, setCpRoomId, cpName, setCpName } = useStateVariable();
-  const { socket } = useContext(EnvVariableContext);
+  const { socket ,host, apiKey } = useContext(EnvVariableContext);
   const { PopAlert, closeAlert } = useAlert();
   const navigate=useNavigate();
 
@@ -184,9 +185,17 @@ const BuzzerMemberPage = () => {
   };
 
   // Handle leave room
-  const handleLeaveRoom = () => {
+  const handleLeaveRoom = async() => {
 
+    if(await checkIsGuest(host,apiKey)){
+      await deleteGuestUser(host,apiKey);
+      localStorage.removeItem('token');
       socket.emit('leave-room',localStorage.getItem('token'), roomId);
+      navigate('/');
+      return;
+    }
+      socket.emit('leave-room',localStorage.getItem('token'), roomId);
+      
     setShowLeaveModal(false);
     // Navigate away or handle leaving
     navigate('/home');

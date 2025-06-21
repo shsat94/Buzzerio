@@ -393,4 +393,36 @@ router.get('/getuserdetail', fetchUser, async (req, res) => {
     }
 });
 
+router.post('/guestSignup', async (req, res) => {
+    let execution = true;
+    try {
+        let userisPresent = false;
+        let user = await User.create({
+            name: req.body.name,
+            email: `guest${Math.floor(100000 + Math.random() * 900000)}@gmail.com`,
+            password: `guest${Math.floor(100000 + Math.random() * 900000)}@1234`,
+            authProvider: 'local',
+            isGuest:true
+        });
+
+        const data = {
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                authProvider: user.authProvider,
+                isGuest:user.isGuest
+            }
+        };
+        const authenticationToken = jwt.sign(data, secretKey);
+        res.status(200).json({ userisPresent, execution, authenticationToken });
+
+    } catch (error) {
+        execution = false;
+        console.error(error);
+        res.status(500).json({ execution });
+    }
+});
+
+
 module.exports = router;

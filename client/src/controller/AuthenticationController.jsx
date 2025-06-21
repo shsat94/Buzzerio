@@ -147,3 +147,21 @@ export const linkGoogleAccount = async (credential, host, apiKey) => {
     throw new Error(error.message || 'Failed to link Google account');
   }
 };
+
+
+export const signupGuest = async (personName, host, apiKey) => {
+  const res = await fetch(`${host}/${apiKey}/authentication/guestSignup`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify({ name: personName })
+  });
+  console.log("resteer");
+  if(res.status==200){
+  const response = await res.json();
+  localStorage.setItem('token', response.authenticationToken);
+  return true;
+  }
+  return false;
+};
