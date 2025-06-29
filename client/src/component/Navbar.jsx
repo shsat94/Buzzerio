@@ -63,7 +63,6 @@ const Navbar = () => {
   
     fetchRoom();
   }, [popupEnabled]);
-  
 
   useEffect(() => {
 
