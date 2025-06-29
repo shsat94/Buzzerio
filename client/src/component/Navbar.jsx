@@ -38,6 +38,15 @@ const Navbar = () => {
   const roomId = searchParams.get('roomid');
   const fullUrl = window.location.href;
   const { setSearchRoomId, setJoinRoomAsGuest, searchUrl, setSearchUrl } = useSearchRoomId();
+  const checkForRoom=async()=>{
+    const res = await fetch(`${host}/${apiKey}/host/getroomdetails`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return res;
+  }
   useEffect(() => {
     const fetchRoom = async () => {
       if (popupEnabled) {
