@@ -35,10 +35,14 @@ router.post('/deleteroom',fetchUser,async(req,res)=>{
  
 
 
-router.get('/getroomdetails',fetchUser,async(req,res)=>{
+router.post('/getroomdetails',async(req,res)=>{
     let execution=true;
     try { 
         const room= await Room.findOne({roomId:req.body.roomId});
+        if(!room){
+            res.status(404).json({});
+            return;
+        }
         res.status(200).json({execution,room});
         
     } catch (error) {

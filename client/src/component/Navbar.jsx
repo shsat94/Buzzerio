@@ -39,15 +39,31 @@ const Navbar = () => {
   const fullUrl = window.location.href;
   const { setSearchRoomId, setJoinRoomAsGuest, searchUrl, setSearchUrl } = useSearchRoomId();
   useEffect(() => {
-    if (popupEnabled) {
-      setSearchUrl(fullUrl);
-      setSearchRoomId(roomId);
-      if (localStorage.getItem('token') !== null) {
-        socket.emit("join-room", roomId, localStorage.getItem('token'));
+    const fetchRoom = async () => {
+      if (popupEnabled) {
+        try {
+          let res = await checkForRoom();
+          if (res.status === 404) {
+            closeAlert();
+            PopAlert('error', "This room is not available.", () => { navigate('/'); }, 'Ok');
+          } else {
+            setSearchUrl(fullUrl);
+            setSearchRoomId(roomId);
+            if (localStorage.getItem('token') !== null) {
+              socket.emit("join-room", roomId, localStorage.getItem('token'));
+            }
+            navigate('/option');
+          }
+        } catch (error) {
+          console.error('Error checking room:', error);
+          PopAlert('error', "Something went wrong. Please try again.", () => { navigate('/'); }, 'Ok');
+        }
       }
-      navigate('/option');
-    }
+    };
+  
+    fetchRoom();
   }, [popupEnabled]);
+  
 
   useEffect(() => {
 
