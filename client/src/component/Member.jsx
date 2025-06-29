@@ -17,6 +17,7 @@ import { useStateVariable } from '../contextApi/StateVariables';
 import { EnvVariableContext } from '../contextApi/envVariables';
 import { useAlert } from '../contextApi/Alert';
 import { useNavigate } from 'react-router-dom';
+import { checkIsGuest, deleteGuestUser } from '../controller/MemberController';
 
 const BuzzerMemberPage = () => {
   const [roomId, setRoomId] = useState('');
@@ -31,7 +32,7 @@ const BuzzerMemberPage = () => {
   const audioRef = useRef(null);
   const { setIsLoading } = useLoading();
   const { cpRoomId, setCpRoomId, cpName, setCpName } = useStateVariable();
-  const { socket } = useContext(EnvVariableContext);
+  const { socket ,host, apiKey } = useContext(EnvVariableContext);
   const { PopAlert, closeAlert } = useAlert();
   const navigate=useNavigate();
 
@@ -133,12 +134,25 @@ const BuzzerMemberPage = () => {
     const action=()=>{
       navigate('/home');
     }
+    const guestMemAction=async()=>{
+      await deleteGuestUser(host,apiKey);
+      localStorage.removeItem('token');
+      localStorage.removeItem('guest');
+      navigate('/');
+    }
 
 
     const handleClosedRoom = () => {
       closeAlert();
-      PopAlert('error', "This room has been closed.", action, "Go to homepage");
-      navigate('/home');
+      if(localStorage.getItem('token')!==null){
+        if(localStorage.getItem('guest')!==null){
+          PopAlert('error', "This room has been closed.", guestMemAction, "Go to homepage");
+
+        }else{
+          PopAlert('error', "This room has been closed.", action, "Go to homepage");
+          navigate('/home');
+        }
+      }
     };
 
     socket.on("room-deleted", handleClosedRoom);
@@ -184,9 +198,18 @@ const BuzzerMemberPage = () => {
   };
 
   // Handle leave room
-  const handleLeaveRoom = () => {
+  const handleLeaveRoom = async() => {
 
+    if(localStorage.getItem('guest')!==null && localStorage.getItem('guest')){
       socket.emit('leave-room',localStorage.getItem('token'), roomId);
+      await deleteGuestUser(host,apiKey);
+      localStorage.removeItem('token');
+      localStorage.removeItem('guest');
+      navigate('/');
+      return;
+    }
+      socket.emit('leave-room',localStorage.getItem('token'), roomId);
+      
     setShowLeaveModal(false);
     // Navigate away or handle leaving
     navigate('/home');

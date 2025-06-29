@@ -6,7 +6,6 @@ module.exports = (io, socket) => {
     socket.on('join-room', async (roomId, token) => {
         const user = fetchUserData(token);
         const roomIsPresent = await saveMemberInRoom(roomId, user);
-
         if (!roomIsPresent) {
             socket.emit("not-found");
         } else {

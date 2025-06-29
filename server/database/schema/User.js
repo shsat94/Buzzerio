@@ -34,6 +34,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 2
     },
+    isGuest:{
+        type:Boolean,
+        default:false
+    },
     date: {
         type: Date,
         default: Date.now

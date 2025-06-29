@@ -1,5 +1,5 @@
 import Navbar from "./component/Navbar";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import Signup from './component/Signup/Signup';
 import OtpVerification from './component/OtpVerification';
 import NameAndPassword from './component/Signup/NameAndPassword';
@@ -11,6 +11,8 @@ import BuzzerMemberPage from "./component/Member";
 import LandingPage from "./component/LandingPage";
 import ForgotPassword from "./component/ForgotPassword";
 import SetNewPassword from "./component/PasswordReset";
+import JoinRoomPopup from "./component/GuestJoinRoom";
+import Options from "./component/Options";
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
           <Route exact path='/member' element={<BuzzerMemberPage />}></Route>
           <Route exact path='/forgotpassword' element={<ForgotPassword />}></Route>
           <Route exact path='/resetpassword' element={<SetNewPassword />}></Route>
+          <Route exact path='/guestroomjoin' element={<JoinRoomPopup />}></Route>
+          <Route exact path='/option' element={<Options />}></Route>
         </Routes>
       </BrowserRouter>
     </>

@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { 
-  Copy, 
-  Share2, 
-  Users, 
-  RotateCcw, 
-  X, 
-  Check, 
-  MessageCircle, 
-  Mail, 
+import {
+  Copy,
+  Share2,
+  Users,
+  RotateCcw,
+  X,
+  Check,
+  MessageCircle,
+  Mail,
   Link,
   Crown,
-  Trophy, 
+  Trophy,
   Medal,
   Zap
 } from 'lucide-react';
@@ -20,10 +20,10 @@ import { useNavigate } from 'react-router-dom';
 import { useStateVariable } from '../contextApi/StateVariables';
 
 const HostLeaderboard = () => {
-  const [roomId,setRoomId] = useState("");
-  const [hostName,setHostName] = useState("hi");
+  const [roomId, setRoomId] = useState("");
+  const [hostName, setHostName] = useState("hi");
   const [leaderboard, setLeaderboard] = useState([]);
-  const [members,setMembers] = useState([]);
+  const [members, setMembers] = useState([]);
   const [showMembers, setShowMembers] = useState(false);
   const [showCloseConfirm, setShowCloseConfirm] = useState(false);
   const [showReloadConfirm, setShowReloadConfirm] = useState(false);
@@ -33,25 +33,25 @@ const HostLeaderboard = () => {
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const leaderboardRef = useRef(null);
   const animationRef = useRef(null);
-  const{socket}= useContext(EnvVariableContext);
+  const { socket } = useContext(EnvVariableContext);
   const { setIsLoading } = useLoading();
-  const navigate=useNavigate();
-  const {newRoom,rejoinRoomId}=useStateVariable();
+  const navigate = useNavigate();
+  const { newRoom, rejoinRoomId } = useStateVariable();
 
 
 
 
-  useEffect(()=>{
-    if(newRoom){
-    socket.emit("create-room", localStorage.getItem("token"));
-    ("srfrrafa");
+  useEffect(() => {
+    if (newRoom) {
+      socket.emit("create-room", localStorage.getItem("token"));
+      ("srfrrafa");
     }
-    else{
+    else {
       (rejoinRoomId);
-      socket.emit("host-rejoin-room",rejoinRoomId);
+      socket.emit("host-rejoin-room", rejoinRoomId);
     }
-  },[]);
- 
+  }, []);
+
 
   useEffect(() => {
     if (!socket) return;
@@ -60,9 +60,9 @@ const HostLeaderboard = () => {
       setHostName(hostname);
       setRoomId(roomid);
     };
-  
+
     socket.on('creator-room-info', handleRoomInfo);
-    
+
 
     socket.on("update-host-leader", (timemaplist) => {
       setLeaderboard(timemaplist);
@@ -70,7 +70,7 @@ const HostLeaderboard = () => {
     socket.on("member-details", (allmembers) => {
       (allmembers);
       ("gg");
-      allmembers!=null?setMembers(allmembers):setMembers([]);
+      allmembers != null ? setMembers(allmembers) : setMembers([]);
     });
   }, [socket]);
 
@@ -103,9 +103,9 @@ const HostLeaderboard = () => {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(roomId);
+      await navigator.clipboard.writeText(`https://buzzerio-pw44.onrender.com/?popup=true&roomid=${roomId}`);
       setCopied(true);
-      showToast('Room ID copied to clipboard!', 'success');
+      showToast('Link to join is copied to clipboard!', 'success');
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       showToast('Failed to copy room ID', 'error');
@@ -118,13 +118,14 @@ const HostLeaderboard = () => {
   };
 
   const handleShare = (platform) => {
-    const shareText = `Join my Buzzer room: ${roomId}`;
-    // const shareUrl = `https://buzzer.app/room/${roomId}`;
-    
+    const shareText = `Join my Buzzer room: Click on Link : \n`;
+    const shareUrl = `https://buzzerio-pw44.onrender.com/?popup=true&roomid=${roomId}`;
+    // const shareUrl = `http://localhost:5173/?popup=true&roomid=${roomId}`;
+    const fullMessage = `${shareText} ${shareUrl}`;
+
     switch (platform) {
       case 'whatsapp':
-        window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`);
-        break;
+        window.open(`https://wa.me/?text=${encodeURIComponent(fullMessage)}`);
       // case 'email':
       //   window.open(`mailto:?subject=Join my Buzzer room&body=${encodeURIComponent(shareText)}`);
       //   break;
@@ -137,12 +138,12 @@ const HostLeaderboard = () => {
 
   const resetLeaderboard = () => {
     setLeaderboard([]);
-    socket.emit("reset-leaderboard",roomId);
+    socket.emit("reset-leaderboard", roomId);
     showToast('Leaderboard reset successfully!', 'success');
   };
 
   const closeRoom = () => {
-    socket.emit('close-room',roomId);
+    socket.emit('close-room', roomId);
     showToast('Room closed successfully!', 'success');
     setShowCloseConfirm(false);
     navigate('/home');
@@ -185,7 +186,7 @@ const HostLeaderboard = () => {
                 <p className="text-gray-600">Host: <span className="font-semibold text-purple-600">{hostName}</span></p>
               </div>
             </div>
-            
+
             <div className="flex flex-wrap gap-3">
               <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-4 py-2">
                 <span className="text-sm font-medium text-gray-600">Room ID:</span>
@@ -204,7 +205,7 @@ const HostLeaderboard = () => {
                   </div>
                 </button>
               </div>
-              
+
               <div className="relative">
                 <button
                   onClick={() => setShowShareMenu(!showShareMenu)}
@@ -213,7 +214,7 @@ const HostLeaderboard = () => {
                   <Share2 className="w-4 h-4" />
                   Share
                 </button>
-                
+
                 {showShareMenu && (
                   <div className="absolute top-12 right-0 bg-white rounded-xl shadow-lg border p-2 min-w-48 z-20">
                     <button
@@ -262,7 +263,7 @@ const HostLeaderboard = () => {
                   Reset
                 </button>
               </div>
-              
+
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -313,7 +314,7 @@ const HostLeaderboard = () => {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
                   <Users className="w-5 h-5 text-blue-500" />
-                  Members ({members.length-1<0?0:members.length-1})
+                  Members ({members.length - 1 < 0 ? 0 : members.length - 1})
                 </h3>
                 <button
                   onClick={() => setShowMembers(!showMembers)}
@@ -322,7 +323,7 @@ const HostLeaderboard = () => {
                   {showMembers ? 'Hide' : 'Show'} Members
                 </button>
               </div>
-              
+
               <div className={`transition-all duration-500 overflow-hidden ${showMembers ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
                 <div className="space-y-2 max-h-80 overflow-y-auto">
                   {members.slice(1).map((member, index) => (
@@ -409,9 +410,8 @@ const HostLeaderboard = () => {
       {/* Toast Notification */}
       {toast.show && (
         <div className="fixed top-4 right-4 z-50">
-          <div className={`p-4 rounded-xl shadow-lg text-white ${
-            toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
-          }`}>
+          <div className={`p-4 rounded-xl shadow-lg text-white ${toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            }`}>
             {toast.message}
           </div>
         </div>

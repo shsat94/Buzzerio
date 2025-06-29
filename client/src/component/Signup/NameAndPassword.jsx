@@ -6,6 +6,7 @@ import { signUp } from '../../controller/AuthenticationController';
 import { EnvVariableContext } from '../../contextApi/envVariables';
 import { useLoading } from '../../contextApi/Load';
 import { useAlert } from '../../contextApi/Alert';
+import { useSearchRoomId } from '../../contextApi/Roomid';
 
 export default function UserForm() {
   // Added background and centering styling to the page
@@ -26,6 +27,7 @@ export default function UserForm() {
   const { host, apiKey } = useContext(EnvVariableContext);
   const { setIsLoading } = useLoading();
     const { PopAlert } = useAlert();
+    const { searchUrl } = useSearchRoomId();
   
   // State for validation
   const [isNameValid, setIsNameValid] = useState(null);
@@ -78,6 +80,10 @@ export default function UserForm() {
     setIsLoading(true);
     await signUp(cpEmail,password,name,host,apiKey);
     setIsLoading(false);
+    if(searchUrl!=''){
+      window.location.href = searchUrl;
+      return;
+    }
     PopAlert('success',"Logged in successfully.",()=>{});
     navigate('/');
   };

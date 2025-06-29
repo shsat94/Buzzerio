@@ -10,6 +10,5 @@ exports.fetchUserData=(token,res)=>{
         } catch (error) {
             execution=false;
             (error);
-            res.send(500).json({execution});
         }
 }; 
