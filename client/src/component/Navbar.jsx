@@ -43,7 +43,10 @@ const Navbar = () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        roomId: roomId
+      })
     });
     return res;
   }
