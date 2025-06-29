@@ -52,7 +52,6 @@ const JoinRoomPopup = ({ isOpen = true }) => {
             });
     
             socket.on('room-joined', (roomid, memName) => {
-                console.log("joined");
                 setCpRoomId(roomid);
                 setCpName(memName)
                 navigate('/member');
@@ -63,7 +62,6 @@ const JoinRoomPopup = ({ isOpen = true }) => {
         if (isFormValid) {
             if (await signupGuest(name, host, apiKey)) {
                 await joinRoom(searchRoomid);
-                console.log("set");
             }
             else {
                 closeAlert();

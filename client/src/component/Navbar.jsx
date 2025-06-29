@@ -58,7 +58,6 @@ const Navbar = () => {
     });
 
     socket.on('room-joined', (roomid, memName) => {
-      console.log("joined");
       setCpRoomId(roomid);
       setCpName(memName)
       navigate('/member');

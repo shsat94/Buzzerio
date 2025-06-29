@@ -22,8 +22,6 @@ export const checkIsGuest = async ( host, apiKey) => {
       }
     });
     const response = await res.json();
-    console.log("delete");
-        console.log("reser");
 
   };
   

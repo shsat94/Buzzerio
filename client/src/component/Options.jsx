@@ -29,7 +29,6 @@ const Options = () => {
   };
 
   const handleContinueLogin = () => {
-    console.log('Continue with Login clicked');
     setJoinRoomAsGuest(false);
       closeAlert();
       PopAlert('warning', "You need to login before joining or join as guest.", ()=>{navigate('/login');}, "Login");

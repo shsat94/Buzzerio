@@ -157,7 +157,6 @@ export const signupGuest = async (personName, host, apiKey) => {
     },
     body: JSON.stringify({ name: personName })
   });
-  console.log("resteer");
   if(res.status==200){
   const response = await res.json();
   localStorage.setItem('guest',true);
