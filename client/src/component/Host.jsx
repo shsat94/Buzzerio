@@ -103,7 +103,7 @@ const HostLeaderboard = () => {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(`http://localhost:5173/?popup=true&roomid=${roomId}`);
+      await navigator.clipboard.writeText(`https://buzzerio-pw44.onrender.com/?popup=true&roomid=${roomId}`);
       setCopied(true);
       showToast('Link to join is copied to clipboard!', 'success');
       setTimeout(() => setCopied(false), 2000);
@@ -119,8 +119,8 @@ const HostLeaderboard = () => {
 
   const handleShare = (platform) => {
     const shareText = `Join my Buzzer room: Click on Link : \n`;
-    // const shareUrl = `https://buzzerio-pw44.onrender.com/?popup=true&roomid=${roomId}`;
-    const shareUrl = `http://localhost:5173/?popup=true&roomid=${roomId}`;
+    const shareUrl = `https://buzzerio-pw44.onrender.com/?popup=true&roomid=${roomId}`;
+    // const shareUrl = `http://localhost:5173/?popup=true&roomid=${roomId}`;
     const fullMessage = `${shareText} ${shareUrl}`;
 
     switch (platform) {
