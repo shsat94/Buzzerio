@@ -134,12 +134,25 @@ const BuzzerMemberPage = () => {
     const action=()=>{
       navigate('/home');
     }
+    const guestMemAction=async()=>{
+      await deleteGuestUser(host,apiKey);
+      localStorage.removeItem('token');
+      localStorage.removeItem('guest');
+      navigate('/');
+    }
 
 
     const handleClosedRoom = () => {
       closeAlert();
-      PopAlert('error', "This room has been closed.", action, "Go to homepage");
-      navigate('/home');
+      if(localStorage.getItem('token')!==null){
+        if(localStorage.getItem('guest')!==null){
+          PopAlert('error', "This room has been closed.", guestMemAction, "Go to homepage");
+
+        }else{
+          PopAlert('error', "This room has been closed.", action, "Go to homepage");
+          navigate('/home');
+        }
+      }
     };
 
     socket.on("room-deleted", handleClosedRoom);
@@ -187,10 +200,11 @@ const BuzzerMemberPage = () => {
   // Handle leave room
   const handleLeaveRoom = async() => {
 
-    if(await checkIsGuest(host,apiKey)){
+    if(localStorage.getItem('guest')!==null && localStorage.getItem('guest')){
+      socket.emit('leave-room',localStorage.getItem('token'), roomId);
       await deleteGuestUser(host,apiKey);
       localStorage.removeItem('token');
-      socket.emit('leave-room',localStorage.getItem('token'), roomId);
+      localStorage.removeItem('guest');
       navigate('/');
       return;
     }

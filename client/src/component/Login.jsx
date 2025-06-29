@@ -6,6 +6,7 @@ import { EnvVariableContext } from '../contextApi/envVariables';
 import { useLoading } from '../contextApi/Load';
 import { useAlert } from '../contextApi/Alert';
 import { GoogleLogin } from '@react-oauth/google';
+import { useSearchRoomId } from '../contextApi/Roomid';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -19,10 +20,15 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { setIsLoading } = useLoading();
   const { PopAlert, closeAlert } = useAlert();
+const { searchUrl, setSearchUrl } = useSearchRoomId();
   
 
   const handleGoogleSuccess= async(credentialResponse)=>{
     await googleAuth(credentialResponse.credential,host,apiKey);
+    if(searchUrl!=''){
+      window.location.href = searchUrl;
+      return;
+    }
     closeAlert();
     PopAlert('success', 'Sign In successfully', () => {navigate('/home')});
   }
@@ -89,6 +95,10 @@ const LoginPage = () => {
       const loginSuccess = await login(email, password, host, apiKey);
       
       if (loginSuccess) {
+        if(searchUrl!=''){
+          window.location.href = searchUrl;
+          return;
+        }
         setIsLoading(false);
         PopAlert('success', "Logged in successfully!", () => {
           navigate('/home');

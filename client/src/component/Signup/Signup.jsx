@@ -24,6 +24,10 @@ const EmailValidationForm = () => {
 
  const handleGoogleSuccess= async(credentialResponse)=>{
     await googleAuth(credentialResponse.credential,host,apiKey);
+    if(searchUrl!=''){
+      window.location.href = searchUrl;
+      return;
+    }
     closeAlert();
     PopAlert('success', 'Sign In successfully', () => {navigate('/home')});
   }

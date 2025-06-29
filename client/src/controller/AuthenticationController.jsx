@@ -160,6 +160,7 @@ export const signupGuest = async (personName, host, apiKey) => {
   console.log("resteer");
   if(res.status==200){
   const response = await res.json();
+  localStorage.setItem('guest',true);
   localStorage.setItem('token', response.authenticationToken);
   return true;
   }

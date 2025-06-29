@@ -12,6 +12,7 @@ import LandingPage from "./component/LandingPage";
 import ForgotPassword from "./component/ForgotPassword";
 import SetNewPassword from "./component/PasswordReset";
 import JoinRoomPopup from "./component/GuestJoinRoom";
+import Options from "./component/Options";
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route exact path='/forgotpassword' element={<ForgotPassword />}></Route>
           <Route exact path='/resetpassword' element={<SetNewPassword />}></Route>
           <Route exact path='/guestroomjoin' element={<JoinRoomPopup />}></Route>
+          <Route exact path='/option' element={<Options />}></Route>
         </Routes>
       </BrowserRouter>
     </>

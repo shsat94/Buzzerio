@@ -7,10 +7,9 @@ import { useStateVariable } from '../contextApi/StateVariables';
 import { useLoading } from '../contextApi/Load';
 import { getUserDetails } from '../controller/AuthenticationController';
 import { useSearchRoomId } from '../contextApi/Roomid';
-import { checkIsGuest } from '../controller/MemberController';
 
 const Navbar = () => {
-  const { apiKey, host } = useContext(EnvVariableContext);
+  const { apiKey, host, socket } = useContext(EnvVariableContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { cpSetRooms } = useStateVariable();
@@ -26,6 +25,8 @@ const Navbar = () => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState("/api/placeholder/150/150");
   const fileInputRef = useRef(null);
+  const [showNav, setShowNav] = useState(true);
+  const { setCpRoomId, setCpName } = useStateVariable();
 
   // User data states - Initialize with empty values
   const [userDataName, setUserDataName] = useState("");
@@ -35,25 +36,61 @@ const Navbar = () => {
   const [searchParams] = useSearchParams();
   const popupEnabled = searchParams.get('popup') === 'true';
   const roomId = searchParams.get('roomid');
-  const { setSearchRoomId, setJoinRoomAsGuest } = useSearchRoomId();
+  const fullUrl = window.location.href;
+  const { setSearchRoomId, setJoinRoomAsGuest, searchUrl, setSearchUrl } = useSearchRoomId();
   useEffect(() => {
     if (popupEnabled) {
-      setJoinRoomAsGuest(true);
+      setSearchUrl(fullUrl);
       setSearchRoomId(roomId);
-      navigate('/guestroomjoin');
+      if (localStorage.getItem('token') !== null) {
+        socket.emit("join-room", roomId, localStorage.getItem('token'));
+      }
+      navigate('/option');
     }
   }, [popupEnabled]);
-  
-  const checkLogin=async ()=>{
-    const token = localStorage.getItem('token');
-    const isGuest = await checkIsGuest(host, apiKey);
 
-    if (token !== null || !isGuest) {
+  useEffect(() => {
+
+
+    socket.on("not-found", () => {
+      setIsLoading(false);
+      setJoinResult('error');
+    });
+
+    socket.on('room-joined', (roomid, memName) => {
+      console.log("joined");
+      setCpRoomId(roomid);
+      setCpName(memName)
+      navigate('/member');
+    });
+  }, [socket])
+
+  const checkLogin = () => {
+    const token = localStorage.getItem('token');
+    const isGuest = localStorage.getItem('guest') === null ? false : true;
+    if (isGuest) {
+      setIsLoggedIn(false);
+      return;
+    }
+    if (token !== null) {
       setIsLoggedIn(true);
     }
   }
 
-  useEffect(() => {  
+  useEffect(() => {
+    if (localStorage.getItem('token') !== null) {
+      if (localStorage.getItem('guest') !== null) {
+        setShowNav(false);
+      } else {
+        setShowNav(true);
+      }
+    } else {
+      setShowNav(true);
+    }
+
+  }, [localStorage.getItem('guest')]);
+
+  useEffect(() => {
     checkLogin();
   }, [localStorage.getItem('token')]);
 
@@ -111,7 +148,7 @@ const Navbar = () => {
   };
 
   const handleAvailableRoom = async () => {
-    if (localStorage.getItem('token') == null || await checkIsGuest(host, apiKey)) {
+    if (localStorage.getItem('guest') === null ? false : true || localStorage.getItem('token') == null) {
       closeAlert();
       PopAlert('warning', "You have to login to proceed", action, "Login");
       return;
@@ -180,7 +217,9 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="bg-white shadow-lg fixed w-full top-0 z-50">
+
+
+      {showNav && (<nav className="bg-white shadow-lg fixed w-full top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex-shrink-0 flex items-center">
@@ -285,7 +324,7 @@ const Navbar = () => {
                 : 'text-gray-700 hover:text-sky-600 hover:bg-gray-50'
                 } transition-colors duration-300`}
               onClick={async (e) => {
-                if (localStorage.getItem('token') == null || await checkIsGuest(host, apiKey)) {
+                if (localStorage.getItem('guest') === null ? false : true || localStorage.getItem('token') == null) {
                   e.preventDefault();
                   closeAlert();
                   PopAlert('warning', "You have to login to proceed", action, "Login");
@@ -359,7 +398,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      </nav>
+      </nav>)}
 
       {/* Profile Popup Components */}
 
